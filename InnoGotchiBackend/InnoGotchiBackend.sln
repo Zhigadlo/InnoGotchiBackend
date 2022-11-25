@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoGotchi.Web", "InnoGotchi.Web\InnoGotchi.Web.csproj", "{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnnoGotchi.DAL", "InnnoGotchi.DAL\InnnoGotchi.DAL.csproj", "{D655595E-234F-4937-BA23-8FF56FB756E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D655595E-234F-4937-BA23-8FF56FB756E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D655595E-234F-4937-BA23-8FF56FB756E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D655595E-234F-4937-BA23-8FF56FB756E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D655595E-234F-4937-BA23-8FF56FB756E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CBC48051-9BBE-4E68-BA1A-0074AB20BE3F}
+	EndGlobalSection
+EndGlobal
