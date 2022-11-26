@@ -27,6 +27,11 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Farms.Where(predicate);
         }
 
+        public Farm? First(Func<Farm, bool> predicate)
+        {
+            return _context.Farms.FirstOrDefault(predicate);
+        }
+
         public Farm? Get(int id)
         {
             return _context.Farms.FirstOrDefault(f => f.Id == id);

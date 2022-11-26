@@ -27,6 +27,11 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Users.Where(predicate);
         }
 
+        public User? First(Func<User, bool> predicate)
+        {
+            return _context.Users.FirstOrDefault(predicate);
+        }
+
         public User? Get(int id)
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);

@@ -27,6 +27,11 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Pets.Where(predicate);
         }
 
+        public Pet? First(Func<Pet, bool> predicate)
+        {
+            return _context.Pets.FirstOrDefault(predicate);
+        }
+
         public Pet? Get(int id)
         {
             return _context.Pets.FirstOrDefault(p => p.Id == id);
