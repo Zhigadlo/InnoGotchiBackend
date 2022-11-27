@@ -33,7 +33,7 @@ namespace InnoGotchi.BLL.Services
 
         public UserDTO? Get(int id)
         {
-            User? user = _database.Users.First(u => u.Id == id);
+            User? user = _database.Users.Get(id);
             if (user == null)
                 return null;
 

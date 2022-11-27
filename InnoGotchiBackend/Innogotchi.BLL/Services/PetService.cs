@@ -33,7 +33,7 @@ namespace InnoGotchi.BLL.Services
 
         public PetDTO? Get(int id)
         {
-            Pet? pet = _database.Pets.First(p => p.Id == id);
+            Pet? pet = _database.Pets.Get(id);
             if (pet == null)
                 return null;
             return _mapper.Map<PetDTO>(pet);
