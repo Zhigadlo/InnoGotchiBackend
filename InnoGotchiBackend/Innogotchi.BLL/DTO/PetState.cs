@@ -3,8 +3,7 @@
     public enum PetState
     {
         Dead = 0,
-        Hungry = 1,
-        Normal = 2, 
-        Full = 3
+        Alive = 1,
+        Newborn = 2
     }
 }
