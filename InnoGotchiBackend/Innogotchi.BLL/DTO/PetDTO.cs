@@ -4,12 +4,19 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Age { get; set; }
-        public PetState HungryLevel { get; set; }
-        public PetState ThirstyLevel { get; set; }
-        public DateTime LastNormalHungryState { get; set; }
-        public DateTime LastNormalThirstyState { get; set; }
+        public int FeedingCount { get; set; }
+        public int DrinkingCount { get; set; }
+
+        public AppearanceDTO Appearance { get; set; }
+
+        public DateTime CreateTime { get; set; }
+        public DateTime LastFeedingTime { get; set; }
+        public DateTime LastDrinkingTime { get; set; }
+        public DateTime FirstHappinessDate { get; set; }
+
         public int FarmId { get; set; }
-       
+        public FarmDTO Farm { get; set; }
+
+
     }
 }
