@@ -8,5 +8,8 @@
         public List<User> Сollaborators { get; set; }
         public int OwnerId { get; set; }
         public User Owner { get; set; }
+        public DateTime CreateTime { get; set; }
+        public int FeedingCount { get; set; }
+        public int DrinkingCount { get; set; }
     }
 }
