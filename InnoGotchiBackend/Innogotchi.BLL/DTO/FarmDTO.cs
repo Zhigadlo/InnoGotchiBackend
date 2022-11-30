@@ -12,6 +12,10 @@
         public int OwnerId { get; set; }
         public UserDTO Owner { get; set; }
 
+        public double GetAverageFeedingPeriod(DateTime day)
+        {
+            return Pets.Average(p => p.GetAverageFeedingCount(day));
+        }
         public int GetAlivePetsCount(DateTime feedingPeriod, DateTime drinkingPeriod) => Pets.Count(p => p.GetPetState(feedingPeriod, drinkingPeriod) != PetState.Dead);
         public int GetDeadPetsCount(DateTime feedingPeriod, DateTime drinkingPeriod) => Pets.Count(p => p.GetPetState(feedingPeriod, drinkingPeriod) == PetState.Dead);
     }
