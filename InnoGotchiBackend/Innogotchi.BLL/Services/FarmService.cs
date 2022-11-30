@@ -11,11 +11,10 @@ namespace InnoGotchi.BLL.Services
         private IUnitOfWork _database;
         private IMapper _mapper;
 
-        public FarmService(IUnitOfWork uow)
+        public FarmService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Farm, FarmDTO>().ReverseMap());
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
         }
         public void Create(FarmDTO item)
         {

@@ -10,11 +10,10 @@ namespace InnoGotchi.BLL.Services
     {
         private IUnitOfWork _database;
         private IMapper _mapper;
-        public UserService(IUnitOfWork uow)
+        public UserService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, User>().ReverseMap());
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
         }
         public void Create(UserDTO item)
         {

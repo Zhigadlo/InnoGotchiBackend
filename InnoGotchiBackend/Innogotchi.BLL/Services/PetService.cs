@@ -11,11 +11,11 @@ namespace InnoGotchi.BLL.Services
         private IUnitOfWork _database;
         private IMapper _mapper;
         
-        public PetService(IUnitOfWork uow)
+        public PetService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Pet, PetDTO>().ReverseMap());
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
+            
         }
         public void Create(PetDTO item)
         {
