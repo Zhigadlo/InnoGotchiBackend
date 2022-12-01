@@ -29,7 +29,6 @@ namespace InnoGotchi.BLL.Services
             if(farm == null)
                 return null;
             return _mapper.Map<FarmDTO>(farm);
-
         }
 
         public IEnumerable<FarmDTO> GetAll()

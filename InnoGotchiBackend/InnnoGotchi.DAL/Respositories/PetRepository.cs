@@ -4,9 +4,13 @@ using InnnoGotchi.DAL.Interfaces;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class PetRepository : InnoGotchiContextHandler, IRepository<Pet>
+    public class PetRepository : IRepository<Pet>
     {
-        public PetRepository(InnoGotchiContext context) : base(context) { }
+        private InnoGotchiContext _context;
+        public PetRepository(InnoGotchiContext context)
+        {
+            _context = context;
+        }
 
         public void Create(Pet item)
         {

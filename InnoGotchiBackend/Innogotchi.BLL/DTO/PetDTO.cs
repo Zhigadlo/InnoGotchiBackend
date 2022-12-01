@@ -1,4 +1,6 @@
-﻿namespace InnoGotchi.BLL.DTO
+﻿using InnoGotchi.BLL.BusinessModels;
+
+namespace InnoGotchi.BLL.DTO
 {
     public class PetDTO
     {
@@ -19,53 +21,48 @@
         public int FarmId { get; set; }
         public FarmDTO Farm { get; set; }
 
-        public int GetAge(DateTime day, DateTime feedingPeriod, DateTime drinkingPeriod)
+        public int GetAge()
         {
-            if (GetPetState(feedingPeriod, drinkingPeriod) != PetState.Dead)
-                return (int)((DateTime.Now - CreateTime).Ticks / day.Ticks);
+            if (GetPetState() != PetState.Dead)
+                return (int)((DateTime.Now - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks);
             else
-                return (int)((DeadTime - CreateTime).Ticks / day.Ticks);
+                return (int)((DeadTime - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks);
         }
-        public int GetHappinessDaysCount(DateTime day)
+        public int GetHappinessDaysCount()
         {
-            return (int)((DateTime.Now - FirstHappinessDate).Ticks/ day.Ticks);
+            return (int)((DateTime.Now - FirstHappinessDate).Ticks/ Globals.InnoGotchiDay.Ticks);
         }
            
-        public double GetAverageFeedingCount(DateTime day)
-        {
-            return (DateTime.Now - CreateTime).Ticks / FeedingCount / day.Ticks;
-        }
-        public double GetAverageDrinkingCount(DateTime day)
-        {
-            return (DateTime.Now - CreateTime).Ticks / DrinkingCount / day.Ticks;
-        }
+        public double GetAverageFeedingPeriod() => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
+        public double GetAverageDrinkingPeriod() => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;
+        
 
-        public PetState GetPetState(DateTime feedingPeriod, DateTime drinkingPeriod)
+        public PetState GetPetState()
         {
-            if(GetHungryLavel(feedingPeriod) != HungerLavel.Dead 
-                && GetThirstyLavel(drinkingPeriod) != ThirstyLavel.Dead)
+            if(GetHungryLavel() != HungerLavel.Dead 
+                && GetThirstyLavel() != ThirstyLavel.Dead)
                 return PetState.Alive;
             else
                 return PetState.Dead;
         } 
-        public HungerLavel GetHungryLavel(DateTime feedingPeriod)
+        public HungerLavel GetHungryLavel()
         {
-            if ((DateTime.Now - LastFeedingTime).Ticks > feedingPeriod.Ticks * 3)
+            if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 3)
                 return HungerLavel.Dead;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > feedingPeriod.Ticks * 2)
+            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 2)
                 return HungerLavel.Hungry;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > feedingPeriod.Ticks)
+            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks)
                 return HungerLavel.Normal;
             else
                 return HungerLavel.Full;
         }
-        public ThirstyLavel GetThirstyLavel(DateTime drinkingPeriod)
+        public ThirstyLavel GetThirstyLavel()
         {
-            if ((DateTime.Now - LastFeedingTime).Ticks > drinkingPeriod.Ticks * 3)
+            if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks * 3)
                 return ThirstyLavel.Dead;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > drinkingPeriod.Ticks * 2)
+            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks * 2)
                 return ThirstyLavel.Thirsty;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > drinkingPeriod.Ticks)
+            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks)
                 return ThirstyLavel.Normal;
             else
                 return ThirstyLavel.Full;

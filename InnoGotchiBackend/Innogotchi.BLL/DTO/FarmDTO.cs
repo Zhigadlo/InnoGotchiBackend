@@ -12,11 +12,13 @@
         public int OwnerId { get; set; }
         public UserDTO Owner { get; set; }
 
-        public double GetAverageFeedingPeriod(DateTime day)
-        {
-            return Pets.Average(p => p.GetAverageFeedingCount(day));
-        }
-        public int GetAlivePetsCount(DateTime feedingPeriod, DateTime drinkingPeriod) => Pets.Count(p => p.GetPetState(feedingPeriod, drinkingPeriod) != PetState.Dead);
-        public int GetDeadPetsCount(DateTime feedingPeriod, DateTime drinkingPeriod) => Pets.Count(p => p.GetPetState(feedingPeriod, drinkingPeriod) == PetState.Dead);
+        public double GetAverageHappinessDays() => Pets.Average(p => p.GetHappinessDaysCount());
+        public double GetAveragePetsAge() => Pets.Average(p => p.GetAge());
+        
+        public double GetAverageFeedingPeriod() => Pets.Average(p => p.GetAverageFeedingPeriod());
+        public double GetAverageDrinkingPeriod() => Pets.Average(p => p.GetAverageDrinkingPeriod());
+        
+        public int GetAlivePetsCount() => Pets.Count(p => p.GetPetState() != PetState.Dead);
+        public int GetDeadPetsCount() => Pets.Count(p => p.GetPetState() == PetState.Dead);
     }
 }

@@ -4,9 +4,13 @@ using InnnoGotchi.DAL.Interfaces;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class FarmRepository : InnoGotchiContextHandler, IRepository<Farm>
+    public class FarmRepository : IRepository<Farm>
     {
-        public FarmRepository(InnoGotchiContext context) : base(context) { }
+        private InnoGotchiContext _context;
+        public FarmRepository(InnoGotchiContext context)
+        {
+            _context = context;
+        }
 
         public void Create(Farm item)
         {

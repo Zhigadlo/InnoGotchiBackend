@@ -4,9 +4,13 @@ using InnnoGotchi.DAL.Interfaces;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class UserRepository : InnoGotchiContextHandler, IRepository<User>
+    public class UserRepository : IRepository<User>
     {
-        public UserRepository(InnoGotchiContext context) : base(context) { }
+        private UserContext _context;
+        public UserRepository(UserContext context) 
+        {
+            _context = context;
+        }
         
         public void Create(User item)
         {
