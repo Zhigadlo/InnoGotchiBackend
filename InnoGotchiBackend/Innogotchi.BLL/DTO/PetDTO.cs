@@ -30,21 +30,21 @@ namespace InnoGotchi.BLL.DTO
         }
         public int GetHappinessDaysCount()
         {
-            return (int)((DateTime.Now - FirstHappinessDate).Ticks/ Globals.InnoGotchiDay.Ticks);
+            return (int)((DateTime.Now - FirstHappinessDate).Ticks / Globals.InnoGotchiDay.Ticks);
         }
-           
+
         public double GetAverageFeedingPeriod() => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
         public double GetAverageDrinkingPeriod() => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;
-        
+
 
         public PetState GetPetState()
         {
-            if(GetHungryLavel() != HungerLavel.Dead 
+            if (GetHungryLavel() != HungerLavel.Dead
                 && GetThirstyLavel() != ThirstyLavel.Dead)
                 return PetState.Alive;
             else
                 return PetState.Dead;
-        } 
+        }
         public HungerLavel GetHungryLavel()
         {
             if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 3)

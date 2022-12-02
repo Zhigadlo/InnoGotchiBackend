@@ -6,7 +6,7 @@ namespace InnoGotchi.BLL.Mapper
 {
     public class MapperProfile : Profile
     {
-        public MapperProfile() 
+        public MapperProfile()
         {
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Pet, PetDTO>().ReverseMap();

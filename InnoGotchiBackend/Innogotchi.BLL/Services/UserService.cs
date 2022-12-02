@@ -3,6 +3,7 @@ using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
+using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
@@ -10,24 +11,32 @@ namespace InnoGotchi.BLL.Services
     {
         private IUnitOfWork _database;
         private IMapper _mapper;
+        private UserValidator _validator;
         public UserService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;
+            _validator = new UserValidator();
         }
-        public void Create(UserDTO item)
+        public int Create(UserDTO item)
         {
             User? user = _database.Users.First(u => u.Email == item.Email);
-            
-            if(user != null) 
+
+            if (user != null)
             {
                 throw new Exception("This email is already in use");
             }
 
             User newUser = _mapper.Map<User>(item);
-
-            _database.Users.Create(newUser); 
-            _database.SaveChanges();
+            var result = _validator.Validate(newUser);
+            if (result.IsValid)
+            {
+                _database.Users.Create(newUser);
+                _database.SaveChanges();
+                return newUser.Id;
+            }
+            else
+                return -1;
         }
 
         public UserDTO? Get(int id)
@@ -35,8 +44,8 @@ namespace InnoGotchi.BLL.Services
             User? user = _database.Users.Get(id);
             if (user == null)
                 return null;
-
-            return _mapper.Map<UserDTO>(user);
+            else
+                return _mapper.Map<UserDTO>(user);
         }
 
         public IEnumerable<UserDTO> GetAll()
@@ -47,8 +56,12 @@ namespace InnoGotchi.BLL.Services
         public void Update(int id, UserDTO item)
         {
             User user = _mapper.Map<User>(item);
-            _database.Users.Update(id, user);
-            _database.SaveChanges();
+            var result = _validator.Validate(user);
+            if(result.IsValid)
+            {
+                _database.Users.Update(id, user);
+                _database.SaveChanges();
+            }
         }
     }
 }

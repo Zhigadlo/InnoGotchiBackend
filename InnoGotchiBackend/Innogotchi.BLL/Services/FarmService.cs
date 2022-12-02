@@ -3,6 +3,7 @@ using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
+using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
@@ -10,25 +11,35 @@ namespace InnoGotchi.BLL.Services
     {
         private IUnitOfWork _database;
         private IMapper _mapper;
+        private FarmValidator _validator;
 
         public FarmService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;
+            _validator = new FarmValidator();
         }
-        public void Create(FarmDTO item)
+        public int Create(FarmDTO item)
         {
             Farm farm = _mapper.Map<Farm>(item);
-            _database.Farms.Create(farm);
-            _database.SaveChanges();
+            var result = _validator.Validate(farm);
+            if (result.IsValid)
+            {
+                _database.Farms.Create(farm);
+                _database.SaveChanges();
+                return farm.Id;
+            }
+            else
+                return -1;
         }
 
         public FarmDTO? Get(int id)
         {
             Farm? farm = _database.Farms.Get(id);
-            if(farm == null)
+            if (farm == null)
                 return null;
-            return _mapper.Map<FarmDTO>(farm);
+            else
+                return _mapper.Map<FarmDTO>(farm);
         }
 
         public IEnumerable<FarmDTO> GetAll()
@@ -39,8 +50,12 @@ namespace InnoGotchi.BLL.Services
         public void Update(int id, FarmDTO item)
         {
             Farm farm = _mapper.Map<Farm>(item);
-            _database.Farms.Update(id, farm);
-            _database.SaveChanges();
+            var result = _validator.Validate(farm);
+            if (result.IsValid)
+            {
+                _database.Farms.Update(id, farm);
+                _database.SaveChanges();
+            }
         }
     }
 }

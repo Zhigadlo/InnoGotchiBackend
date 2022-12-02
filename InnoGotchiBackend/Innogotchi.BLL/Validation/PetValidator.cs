@@ -1,16 +1,11 @@
 ﻿using FluentValidation;
-using InnoGotchi.BLL.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using InnnoGotchi.DAL.Entities;
 
 namespace InnoGotchi.BLL.Validation
 {
-    public class PetDTOValidator : AbstractValidator<PetDTO>
+    public class PetValidator : AbstractValidator<Pet>
     {
-        public PetDTOValidator() 
+        public PetValidator()
         {
             RuleFor(p => p.Name).NotEmpty().NotNull();
             RuleFor(p => p.Appearance).NotEmpty().NotNull();

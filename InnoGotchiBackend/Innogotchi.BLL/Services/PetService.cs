@@ -3,6 +3,7 @@ using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
+using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
@@ -10,14 +11,15 @@ namespace InnoGotchi.BLL.Services
     {
         private IUnitOfWork _database;
         private IMapper _mapper;
-        
+        private PetValidator _validator;
+
         public PetService(IUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;
-            
+            _validator = new PetValidator();
         }
-        public void Create(PetDTO item)
+        public int Create(PetDTO item)
         {
             Pet? pet = _database.Pets.First(p => p.Name == item.Name);
             if (pet != null)
@@ -27,8 +29,15 @@ namespace InnoGotchi.BLL.Services
                 throw new Exception("There is no such farm");
 
             Pet newPet = _mapper.Map<Pet>(item);
-            _database.Pets.Create(newPet);
-            _database.SaveChanges();
+            var result = _validator.Validate(newPet);
+            if (result.IsValid)
+            {
+                _database.Pets.Create(newPet);
+                _database.SaveChanges();
+                return newPet.Id;
+            }
+            else
+                return -1;
         }
 
         public PetDTO? Get(int id)
@@ -36,7 +45,8 @@ namespace InnoGotchi.BLL.Services
             Pet? pet = _database.Pets.Get(id);
             if (pet == null)
                 return null;
-            return _mapper.Map<PetDTO>(pet);
+            else
+                return _mapper.Map<PetDTO>(pet);
         }
 
         public IEnumerable<PetDTO> GetAll()
@@ -47,8 +57,12 @@ namespace InnoGotchi.BLL.Services
         public void Update(int id, PetDTO item)
         {
             Pet pet = _mapper.Map<Pet>(item);
-            _database.Pets.Update(id, pet);
-            _database.SaveChanges();
+            var result = _validator.Validate(pet);
+            if (result.IsValid)
+            {
+                _database.Pets.Update(id, pet);
+                _database.SaveChanges();
+            }
         }
     }
 }

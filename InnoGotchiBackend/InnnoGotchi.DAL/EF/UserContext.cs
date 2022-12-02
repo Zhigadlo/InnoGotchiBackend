@@ -7,9 +7,9 @@ namespace InnnoGotchi.DAL.EF
     {
         public DbSet<User> Users { get; set; }
 
-        public UserContext(DbContextOptions<UserContext> options) : base(options) 
+        public UserContext(DbContextOptions<UserContext> options) : base(options)
         {
-            Database.EnsureCreated();   
+            Database.EnsureCreated();
         }
     }
 }

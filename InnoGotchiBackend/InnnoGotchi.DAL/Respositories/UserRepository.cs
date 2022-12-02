@@ -7,11 +7,11 @@ namespace InnnoGotchi.DAL.Respositories
     public class UserRepository : IRepository<User>
     {
         private UserContext _context;
-        public UserRepository(UserContext context) 
+        public UserRepository(UserContext context)
         {
             _context = context;
         }
-        
+
         public void Create(User item)
         {
             _context.Users.Add(item);
