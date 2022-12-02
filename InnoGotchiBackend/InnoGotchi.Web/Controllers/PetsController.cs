@@ -19,7 +19,7 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.GetAll());
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));

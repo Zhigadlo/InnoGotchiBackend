@@ -17,7 +17,7 @@ namespace InnoGotchi.Web.Controllers
         {
             return Ok(_service.GetAll());
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));
@@ -37,6 +37,7 @@ namespace InnoGotchi.Web.Controllers
             _service.Delete(id);
             return Ok();
         }
+        [HttpPut]
         public IActionResult Update(FarmDTO farm)
         {
             _service.Update(farm);

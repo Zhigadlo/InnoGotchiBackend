@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class InnogGotchiUnitOfWork : IUnitOfWork
+    public class InnoGotchiUnitOfWork : IUnitOfWork
     {
         private InnoGotchiContext _innoGotchiContext;
         private PetRepository _petRepository;
         private UserRepository _userRepository;
         private FarmRepository _farmRepository;
 
-        public InnogGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions)
+        public InnoGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions)
         {
             _innoGotchiContext = new InnoGotchiContext(innoGotchiOptions);
             _petRepository = new PetRepository(_innoGotchiContext);
