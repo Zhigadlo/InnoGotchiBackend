@@ -46,9 +46,8 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Farms;
         }
 
-        public void Update(int id, Farm item)
+        public void Update(Farm item)
         {
-            item.Id = id;
             _context.Farms.Update(item);
         }
     }

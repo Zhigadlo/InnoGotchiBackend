@@ -39,7 +39,6 @@ namespace InnoGotchi.BLL.Services
             else
                 return -1;
         }
-
         public PetDTO? Get(int id)
         {
             Pet? pet = _database.Pets.Get(id);
@@ -48,20 +47,44 @@ namespace InnoGotchi.BLL.Services
             else
                 return _mapper.Map<PetDTO>(pet);
         }
-
         public IEnumerable<PetDTO> GetAll()
         {
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets);
         }
-
-        public void Update(int id, PetDTO item)
+        public void Update(PetDTO item)
         {
             Pet pet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(pet);
             if (result.IsValid)
             {
-                _database.Pets.Update(id, pet);
+                _database.Pets.Update(pet);
                 _database.SaveChanges();
+            }
+        }
+        public void Delete(int id)
+        {
+            var pet = _database.Pets.First(p => p.Id == id);
+            if(pet != null)
+            {
+                _database.Pets.Delete(id);
+            }
+        }
+        public void Feed(int id)
+        {
+            PetDTO? pet = Get(id);
+            if (pet != null)
+            {
+                pet.Feed();
+                Update(pet);
+            }
+        }
+        public void Drink(int id)
+        {
+            PetDTO? pet = Get(id);
+            if (pet != null)
+            {
+                pet.Drink();
+                Update(pet);
             }
         }
     }

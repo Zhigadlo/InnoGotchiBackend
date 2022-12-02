@@ -5,6 +5,7 @@
         int Create(T item);
         T? Get(int id);
         IEnumerable<T> GetAll();
-        void Update(int id, T item);
+        void Update(T item);
+        void Delete(int id);
     }
 }

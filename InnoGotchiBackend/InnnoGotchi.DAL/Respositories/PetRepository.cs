@@ -46,9 +46,8 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Pets;
         }
 
-        public void Update(int id, Pet item)
+        public void Update(Pet item)
         {
-            item.Id = id;
             _context.Pets.Update(item);
         }
     }

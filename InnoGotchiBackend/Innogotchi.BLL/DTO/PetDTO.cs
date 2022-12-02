@@ -21,20 +21,19 @@ namespace InnoGotchi.BLL.DTO
         public int FarmId { get; set; }
         public FarmDTO Farm { get; set; }
 
+        public int Age => GetAge();
         public int GetAge()
         {
             if (GetPetState() != PetState.Dead)
-                return (int)((DateTime.Now - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks);
+                return (int)((DateTime.Now - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks / 365);
             else
-                return (int)((DeadTime - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks);
+                return (int)((DeadTime - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks / 365);
         }
-        public int GetHappinessDaysCount()
-        {
-            return (int)((DateTime.Now - FirstHappinessDate).Ticks / Globals.InnoGotchiDay.Ticks);
-        }
+        public int HappinessDaysCount => (int)((DateTime.Now - FirstHappinessDate).Ticks / Globals.InnoGotchiDay.Ticks);
+        
 
-        public double GetAverageFeedingPeriod() => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
-        public double GetAverageDrinkingPeriod() => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;
+        public double AverageFeedingPeriod => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
+        public double AverageDrinkingPeriod => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;
 
 
         public PetState GetPetState()
@@ -47,7 +46,7 @@ namespace InnoGotchi.BLL.DTO
         }
         public HungerLavel GetHungryLavel()
         {
-            if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 3)
+            if ((DateTime.Now - LastFeedingTime).Ticks > (Globals.FeedingPeriod - DateTime.MinValue).Ticks * 3)
                 return HungerLavel.Dead;
             else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 2)
                 return HungerLavel.Hungry;
@@ -66,6 +65,17 @@ namespace InnoGotchi.BLL.DTO
                 return ThirstyLavel.Normal;
             else
                 return ThirstyLavel.Full;
+        }
+
+        public void Feed()
+        {
+            LastDrinkingTime = DateTime.Now;
+            FeedingCount++;
+        }
+        public void Drink()
+        {
+            LastDrinkingTime = DateTime.Now;
+            DrinkingCount++;
         }
     }
 }

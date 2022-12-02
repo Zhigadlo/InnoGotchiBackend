@@ -7,6 +7,7 @@ namespace InnnoGotchi.DAL.EF
     {
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Farm> Farms { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public InnoGotchiContext(DbContextOptions<InnoGotchiContext> options) : base(options)
         {

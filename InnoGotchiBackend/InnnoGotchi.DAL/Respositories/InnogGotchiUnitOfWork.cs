@@ -8,18 +8,16 @@ namespace InnnoGotchi.DAL.Respositories
     public class InnogGotchiUnitOfWork : IUnitOfWork
     {
         private InnoGotchiContext _innoGotchiContext;
-        private UserContext _userContext;
         private PetRepository _petRepository;
         private UserRepository _userRepository;
         private FarmRepository _farmRepository;
 
-        public InnogGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions, DbContextOptions<UserContext> userOptions)
+        public InnogGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions)
         {
             _innoGotchiContext = new InnoGotchiContext(innoGotchiOptions);
-            _userContext = new UserContext(userOptions);
             _petRepository = new PetRepository(_innoGotchiContext);
             _farmRepository = new FarmRepository(_innoGotchiContext);
-            _userRepository = new UserRepository(_userContext);
+            _userRepository = new UserRepository(_innoGotchiContext);
         }
         public IRepository<Pet> Pets
         {

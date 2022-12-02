@@ -6,8 +6,8 @@ namespace InnnoGotchi.DAL.Respositories
 {
     public class UserRepository : IRepository<User>
     {
-        private UserContext _context;
-        public UserRepository(UserContext context)
+        private InnoGotchiContext _context;
+        public UserRepository(InnoGotchiContext context)
         {
             _context = context;
         }
@@ -46,9 +46,8 @@ namespace InnnoGotchi.DAL.Respositories
             return _context.Users;
         }
 
-        public void Update(int id, User item)
+        public void Update(User item)
         {
-            item.Id = id;
             _context.Users.Update(item);
         }
     }

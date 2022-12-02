@@ -4,6 +4,8 @@ using InnnoGotchi.DAL.Interfaces;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Validation;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InnoGotchi.BLL.Services
 {
@@ -31,6 +33,7 @@ namespace InnoGotchi.BLL.Services
             var result = _validator.Validate(newUser);
             if (result.IsValid)
             {
+                newUser.PasswordHash = PasswordToHash(item.Password);
                 _database.Users.Create(newUser);
                 _database.SaveChanges();
                 return newUser.Id;
@@ -47,12 +50,10 @@ namespace InnoGotchi.BLL.Services
             else
                 return _mapper.Map<UserDTO>(user);
         }
-
         public IEnumerable<UserDTO> GetAll()
         {
             return _mapper.Map<IEnumerable<UserDTO>>(_database.Users);
         }
-
         public void Update(int id, UserDTO item)
         {
             User user = _mapper.Map<User>(item);
@@ -61,6 +62,20 @@ namespace InnoGotchi.BLL.Services
             {
                 _database.Users.Update(id, user);
                 _database.SaveChanges();
+            }
+        }
+        
+        private string PasswordToHash(string password)
+        {
+            using (var hashAlg = MD5.Create())
+            {
+                byte[] hash = hashAlg.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var builder = new StringBuilder(hash.Length * 2);
+                for (int i = 0; i < hash.Length; i++)
+                {
+                    builder.Append(hash[i].ToString("X2"));
+                }
+                return builder.ToString();
             }
         }
     }
