@@ -33,6 +33,12 @@ namespace InnoGotchi.BLL.Services
                 return -1;
         }
 
+        public void Delete(int id)
+        {
+            _database.Farms.Delete(id);
+            _database.SaveChanges();
+        }
+
         public FarmDTO? Get(int id)
         {
             Farm? farm = _database.Farms.Get(id);
@@ -47,13 +53,13 @@ namespace InnoGotchi.BLL.Services
             return _mapper.Map<IEnumerable<FarmDTO>>(_database.Farms);
         }
 
-        public void Update(int id, FarmDTO item)
+        public void Update(FarmDTO item)
         {
             Farm farm = _mapper.Map<Farm>(item);
             var result = _validator.Validate(farm);
             if (result.IsValid)
             {
-                _database.Farms.Update(id, farm);
+                _database.Farms.Update(farm);
                 _database.SaveChanges();
             }
         }

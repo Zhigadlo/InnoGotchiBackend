@@ -54,17 +54,21 @@ namespace InnoGotchi.BLL.Services
         {
             return _mapper.Map<IEnumerable<UserDTO>>(_database.Users);
         }
-        public void Update(int id, UserDTO item)
+        public void Update(UserDTO item)
         {
             User user = _mapper.Map<User>(item);
             var result = _validator.Validate(user);
             if(result.IsValid)
             {
-                _database.Users.Update(id, user);
+                _database.Users.Update(user);
                 _database.SaveChanges();
             }
         }
-        
+        public void Delete(int id) 
+        {
+            _database.Users.Delete(id);
+            _database.SaveChanges();
+        }
         private string PasswordToHash(string password)
         {
             using (var hashAlg = MD5.Create())
