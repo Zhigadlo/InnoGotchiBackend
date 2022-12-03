@@ -12,13 +12,10 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(f => f.Id);
             builder.Property(f => f.Name);
             builder.Property(f => f.CreateTime);
-            builder.HasOne(f => f.Owner)
-                   .WithOne(u => u.Farm);
+            
             builder.HasMany(f => f.Pets)
                    .WithOne(p => p.Farm)
                    .HasForeignKey(p => p.FarmId);
-            builder.HasMany(f => f.Сollaborators)
-                   .WithMany(u => u.CollaboratedFarms);
         }
     }
 }

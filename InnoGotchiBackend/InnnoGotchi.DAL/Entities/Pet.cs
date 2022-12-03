@@ -1,12 +1,15 @@
-﻿namespace InnnoGotchi.DAL.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InnnoGotchi.DAL.Entities
 {
+    [Table("Pets")]
     public class Pet
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int FeedingCount { get; set; }
         public int DrinkingCount { get; set; }
-
+        
         public Appearance Appearance { get; set; }
 
         public int FarmId { get; set; }

@@ -14,13 +14,20 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(u => u.LastName);
             builder.Property(u => u.AvatarURL);
             builder.Property(u => u.Email);
-            builder.HasMany(u => u.ColoborationRequests)
+
+            builder.HasMany(u => u.SentRequests)
                    .WithOne(r => r.RequestOwner)
-                   .HasForeignKey(r => r.RequestOwnerId);
-            builder.HasMany(u => u.CollaboratedFarms)
-                   .WithMany(f => f.Сollaborators);
+                   .HasForeignKey(r => r.RequestOwnerId)
+                   .OnDelete(DeleteBehavior.NoAction); 
+            
+            builder.HasMany(u => u.ReceivedRequests)
+                   .WithOne(r => r.RequestReceipient)
+                   .HasForeignKey(r => r.RequestReceipientId)
+                   .OnDelete(DeleteBehavior.NoAction);
+            
             builder.HasOne(u => u.Farm)
-                   .WithOne(f => f.Owner);
+                   .WithOne(f => f.Owner)
+                   .HasForeignKey<Farm>(f => f.OwnerId);
         }
     }
 }

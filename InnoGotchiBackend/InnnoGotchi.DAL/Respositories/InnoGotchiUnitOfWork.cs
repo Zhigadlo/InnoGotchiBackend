@@ -11,6 +11,7 @@ namespace InnnoGotchi.DAL.Respositories
         private PetRepository _petRepository;
         private UserRepository _userRepository;
         private FarmRepository _farmRepository;
+        private RequestRepository _requestRepository;
 
         public InnoGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions)
         {
@@ -18,6 +19,7 @@ namespace InnnoGotchi.DAL.Respositories
             _petRepository = new PetRepository(_innoGotchiContext);
             _farmRepository = new FarmRepository(_innoGotchiContext);
             _userRepository = new UserRepository(_innoGotchiContext);
+            _requestRepository = new RequestRepository(_innoGotchiContext);
         }
         public IRepository<Pet> Pets
         {
@@ -32,6 +34,11 @@ namespace InnnoGotchi.DAL.Respositories
         public IRepository<Farm> Farms
         {
             get => _farmRepository;
+        }
+
+        public IRepository<ColoborationRequest> Requests
+        {
+            get => _requestRepository;
         }
 
         public void SaveChanges()

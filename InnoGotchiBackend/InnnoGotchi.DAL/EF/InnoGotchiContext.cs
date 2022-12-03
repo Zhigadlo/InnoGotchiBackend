@@ -1,4 +1,5 @@
-﻿using InnnoGotchi.DAL.Entities;
+﻿using InnnoGotchi.DAL.EF.EntityTypeConfiguration;
+using InnnoGotchi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.EF
@@ -13,6 +14,14 @@ namespace InnnoGotchi.DAL.EF
         public InnoGotchiContext(DbContextOptions<InnoGotchiContext> options) : base(options)
         {
             Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new FarmConfiguration());
+            modelBuilder.ApplyConfiguration(new PetConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RequestConfiguration());
         }
     }
 }

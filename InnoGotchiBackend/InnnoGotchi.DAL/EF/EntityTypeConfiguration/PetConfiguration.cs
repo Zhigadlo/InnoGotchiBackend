@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
 {
@@ -12,7 +13,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(p => p.Id);
             builder.Property(p => p.Name);
             builder.Property(p => p.CreateTime);
-            builder.Property(p => p.Appearance);
+            builder.OwnsOne(p => p.Appearance);
             builder.Property(p => p.DeadTime);
             builder.Property(p => p.FeedingCount);
             builder.Property(p => p.DrinkingCount);
@@ -20,6 +21,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(p => p.LastFeedingTime);
             builder.Property(p => p.LastDrinkingTime);
             builder.Property(p => p.FarmId);
+            
             builder.HasOne(p => p.Farm)
                    .WithMany(f => f.Pets)
                    .HasForeignKey(p => p.FarmId)

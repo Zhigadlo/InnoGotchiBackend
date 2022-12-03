@@ -10,7 +10,6 @@
         public string? AvatarURL { get; set; }
 
         public List<ColoborationRequestDTO> ColoborationRequests { get; set; }
-        public List<FarmDTO> CollaboratedFarms { get; set; }
 
         public int FarmId { get; set; }
         public FarmDTO Farm { get; set; }
