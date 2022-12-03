@@ -2,6 +2,7 @@
 {
     public class ColoborationRequest
     {
+        public int Id { get; set; }
         public int RequestOwnerId { get; set; }
         public User RequestOwner { get; set; }
 
