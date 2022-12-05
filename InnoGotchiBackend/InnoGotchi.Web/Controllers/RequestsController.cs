@@ -26,7 +26,7 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Get(id));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             _service.Delete(id);

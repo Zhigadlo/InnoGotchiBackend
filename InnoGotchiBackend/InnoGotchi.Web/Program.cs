@@ -20,6 +20,7 @@ builder.Services.AddTransient<IUnitOfWork, InnoGotchiUnitOfWork>();
 builder.Services.AddTransient<FarmService>();
 builder.Services.AddTransient<PetService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<RequestService>();
 
 var app = builder.Build();
 

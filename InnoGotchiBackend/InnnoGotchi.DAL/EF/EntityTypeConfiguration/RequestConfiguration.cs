@@ -9,7 +9,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<ColoborationRequest> builder)
         {
             builder.HasKey(r => r.Id);
-            builder.Property(r => r.Id);
+            builder.Property(r => r.Id).ValueGeneratedOnAdd();
             builder.Property(r => r.IsConfirmed);
             builder.HasOne(r => r.RequestOwner)
                    .WithMany(o => o.SentRequests);

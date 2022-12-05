@@ -5,7 +5,7 @@ namespace InnoGotchi.BLL.Validation
 {
     public class RequestValidator : AbstractValidator<ColoborationRequest>
     {
-        public RequestValidator() 
+        public RequestValidator()
         {
             RuleFor(r => r.IsConfirmed).NotEmpty().NotNull();
             RuleFor(r => r.RequestOwner).NotEmpty().NotNull();

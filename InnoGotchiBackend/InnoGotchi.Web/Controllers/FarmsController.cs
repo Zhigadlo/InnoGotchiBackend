@@ -8,7 +8,7 @@ namespace InnoGotchi.Web.Controllers
     public class FarmsController : Controller
     {
         private FarmService _service;
-        public FarmsController(FarmService service) 
+        public FarmsController(FarmService service)
         {
             _service = service;
         }
@@ -26,12 +26,12 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Create(FarmDTO farm)
         {
             int result = _service.Create(farm);
-            if(result != -1)
+            if (result != -1)
                 return Ok();
             else
                 return BadRequest();
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             _service.Delete(id);

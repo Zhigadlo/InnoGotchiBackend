@@ -9,7 +9,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(u => u.Id);
-            builder.Property(u => u.Id);
+            builder.Property(u => u.Id).ValueGeneratedOnAdd();
             builder.Property(u => u.FirstName);
             builder.Property(u => u.LastName);
             builder.Property(u => u.AvatarURL);
@@ -18,13 +18,13 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.HasMany(u => u.SentRequests)
                    .WithOne(r => r.RequestOwner)
                    .HasForeignKey(r => r.RequestOwnerId)
-                   .OnDelete(DeleteBehavior.NoAction); 
-            
+                   .OnDelete(DeleteBehavior.NoAction);
+
             builder.HasMany(u => u.ReceivedRequests)
                    .WithOne(r => r.RequestReceipient)
                    .HasForeignKey(r => r.RequestReceipientId)
                    .OnDelete(DeleteBehavior.NoAction);
-            
+
             builder.HasOne(u => u.Farm)
                    .WithOne(f => f.Owner)
                    .HasForeignKey<Farm>(f => f.OwnerId);

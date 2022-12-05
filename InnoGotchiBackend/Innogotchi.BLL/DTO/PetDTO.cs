@@ -30,7 +30,7 @@ namespace InnoGotchi.BLL.DTO
                 return (int)((DeadTime - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks / 365);
         }
         public int HappinessDaysCount => (int)((DateTime.Now - FirstHappinessDate).Ticks / Globals.InnoGotchiDay.Ticks);
-        
+
 
         public double AverageFeedingPeriod => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
         public double AverageDrinkingPeriod => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;

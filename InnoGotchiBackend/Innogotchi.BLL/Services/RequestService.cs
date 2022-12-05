@@ -42,7 +42,7 @@ namespace InnoGotchi.BLL.Services
         public ColoborationRequestDTO? Get(int id)
         {
             ColoborationRequest? request = _database.Requests.Get(id);
-            if(request != null)
+            if (request != null)
             {
                 return _mapper.Map<ColoborationRequestDTO>(request);
             }

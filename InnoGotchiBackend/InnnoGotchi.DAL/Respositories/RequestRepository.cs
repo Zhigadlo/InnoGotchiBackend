@@ -19,7 +19,7 @@ namespace InnnoGotchi.DAL.Respositories
         public void Delete(int id)
         {
             ColoborationRequest? request = _context.Requests.FirstOrDefault(r => r.Id == id);
-            if(request != null)
+            if (request != null)
             {
                 _context.Requests.Remove(request);
             }
@@ -38,7 +38,7 @@ namespace InnnoGotchi.DAL.Respositories
         public ColoborationRequest? Get(int id)
         {
             ColoborationRequest? request = _context.Requests.FirstOrDefault(r => r.Id == id);
-            if(request != null )
+            if (request != null)
                 return request;
             else
                 return null;

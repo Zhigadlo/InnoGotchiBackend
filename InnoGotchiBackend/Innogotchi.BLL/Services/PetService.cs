@@ -49,7 +49,7 @@ namespace InnoGotchi.BLL.Services
         }
         public IEnumerable<PetDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets);
+            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
         }
         public void Update(PetDTO item)
         {
@@ -64,7 +64,7 @@ namespace InnoGotchi.BLL.Services
         public void Delete(int id)
         {
             var pet = _database.Pets.First(p => p.Id == id);
-            if(pet != null)
+            if (pet != null)
             {
                 _database.Pets.Delete(id);
             }

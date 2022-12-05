@@ -30,14 +30,14 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Create(pet));
         }
 
-        [HttpPut("update")]
+        [HttpPut("{id}")]
         public IActionResult Update(PetDTO item)
         {
             _service.Update(item);
             return Ok();
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             _service.Delete(id);

@@ -9,13 +9,17 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<Farm> builder)
         {
             builder.HasKey(f => f.Id);
-            builder.Property(f => f.Id);
+            builder.Property(f => f.Id).ValueGeneratedOnAdd();
             builder.Property(f => f.Name);
             builder.Property(f => f.CreateTime);
-            
+
             builder.HasMany(f => f.Pets)
                    .WithOne(p => p.Farm)
                    .HasForeignKey(p => p.FarmId);
+
+            builder.HasOne(f => f.Owner)
+                   .WithOne(u => u.Farm)
+                   .HasPrincipalKey<User>(f => f.FarmId);
         }
     }
 }

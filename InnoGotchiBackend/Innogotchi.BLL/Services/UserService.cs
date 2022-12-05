@@ -52,19 +52,19 @@ namespace InnoGotchi.BLL.Services
         }
         public IEnumerable<UserDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users);
+            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.GetAll());
         }
         public void Update(UserDTO item)
         {
             User user = _mapper.Map<User>(item);
             var result = _validator.Validate(user);
-            if(result.IsValid)
+            if (result.IsValid)
             {
                 _database.Users.Update(user);
                 _database.SaveChanges();
             }
         }
-        public void Delete(int id) 
+        public void Delete(int id)
         {
             _database.Users.Delete(id);
             _database.SaveChanges();
