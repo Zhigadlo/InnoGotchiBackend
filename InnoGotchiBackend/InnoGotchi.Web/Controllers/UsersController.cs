@@ -1,5 +1,8 @@
-﻿using InnoGotchi.BLL.DTO;
+﻿using AutoMapper;
+using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Mapper;
+using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
@@ -8,8 +11,11 @@ namespace InnoGotchi.Web.Controllers
     public class UsersController : Controller
     {
         private UserService _service;
+        private IMapper _mapper;
         public UsersController(UserService service)
         {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
+            _mapper = config.CreateMapper();
             _service = service;
         }
         [HttpGet]
@@ -23,24 +29,26 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Get(id));
         }
         [HttpPost]
-        public IActionResult Create(UserDTO user)
+        public IActionResult Create(UserModel user)
         {
-            int result = _service.Create(user);
+            var userDTO = _mapper.Map<UserDTO>(user);
+            int result = _service.Create(userDTO);
             if (result != -1)
                 return Ok(result);
             else
                 return BadRequest();
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             _service.Delete(id);
             return Ok();
         }
         [HttpPut]
-        public IActionResult Update(UserDTO user)
+        public IActionResult Update(UserModel user)
         {
-            _service.Update(user);
+            var userDTO = _mapper.Map<UserDTO>(user);
+            _service.Update(userDTO);
             return Ok();
         }
     }

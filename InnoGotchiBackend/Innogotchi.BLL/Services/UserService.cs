@@ -57,6 +57,7 @@ namespace InnoGotchi.BLL.Services
         public void Update(UserDTO item)
         {
             User user = _mapper.Map<User>(item);
+            user.PasswordHash = PasswordToHash(item.Password);
             var result = _validator.Validate(user);
             if (result.IsValid)
             {
