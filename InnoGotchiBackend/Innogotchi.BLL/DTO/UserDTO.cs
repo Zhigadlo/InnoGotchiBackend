@@ -1,10 +1,10 @@
 ﻿using InnnoGotchi.DAL.Entities;
+using System.Text.Json.Serialization;
 
 namespace InnoGotchi.BLL.DTO
 {
     public class UserDTO
     {
-
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -12,11 +12,15 @@ namespace InnoGotchi.BLL.DTO
         public string Password { get; set; }
         public string? AvatarURL { get; set; }
 
+        [JsonIgnore]
         public List<ColoborationRequest> SentRequests { get; set; }
+
+        [JsonIgnore]
         public List<ColoborationRequest> ReceivedRequests { get; set; }
+
+        [JsonIgnore]
         public List<ColoborationRequestDTO> ColoborationRequests { get; set; } = new List<ColoborationRequestDTO>();
 
-        public int FarmId { get; set; }
         public FarmDTO? Farm { get; set; }
     }
 }

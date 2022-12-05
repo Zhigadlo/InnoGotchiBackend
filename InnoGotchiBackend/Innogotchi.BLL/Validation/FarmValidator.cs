@@ -8,7 +8,7 @@ namespace InnoGotchi.BLL.Validation
         public FarmValidator()
         {
             RuleFor(f => f.Name).NotEmpty().NotNull();
-            RuleFor(f => f.Owner).NotEmpty().NotNull();
+            RuleFor(f => f.OwnerId).NotEmpty().NotNull();
         }
     }
 }

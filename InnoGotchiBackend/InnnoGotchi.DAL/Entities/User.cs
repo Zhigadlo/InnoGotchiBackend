@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InnnoGotchi.DAL.Entities
 {
@@ -16,7 +17,6 @@ namespace InnnoGotchi.DAL.Entities
         public List<ColoborationRequest> ReceivedRequests { get; set; }
         public List<Farm> CollaboratedFarms { get; set; }
 
-        public int FarmId { get; set; }
         public Farm? Farm { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace InnoGotchi.Web.Mapper
         public ViewModelProfile() 
         {
             CreateMap<UserDTO, UserModel>().ReverseMap();
+            CreateMap<FarmDTO, FarmModel>().ReverseMap();
         }
     }
 }

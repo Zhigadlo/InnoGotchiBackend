@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -33,17 +34,24 @@ namespace InnnoGotchi.DAL.Respositories
 
         public User? First(Func<User, bool> predicate)
         {
-            return _context.Users.FirstOrDefault(predicate);
+            return _context.Users.Include(u => u.CollaboratedFarms)
+                                 .Include(u => u.SentRequests)
+                                 .FirstOrDefault(predicate);
         }
 
         public User? Get(int id)
         {
-            return _context.Users.FirstOrDefault(u => u.Id == id);
+            return _context.Users.Include(u => u.CollaboratedFarms)
+                                 .Include(u => u.SentRequests)
+                                 .FirstOrDefault(u => u.Id == id);
         }
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _context.Users.Include(u => u.CollaboratedFarms)
+                                 .Include(u => u.SentRequests)
+                                 .Include(u => u.Farm)
+                                 .AsEnumerable();
         }
 
         public void Update(User item)

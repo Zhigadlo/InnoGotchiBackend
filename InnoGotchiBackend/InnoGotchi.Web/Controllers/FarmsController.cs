@@ -1,5 +1,8 @@
-﻿using InnoGotchi.BLL.DTO;
+﻿using AutoMapper;
+using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Mapper;
+using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
@@ -8,8 +11,11 @@ namespace InnoGotchi.Web.Controllers
     public class FarmsController : Controller
     {
         private FarmService _service;
+        private IMapper _mapper;
         public FarmsController(FarmService service)
         {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
+            _mapper = config.CreateMapper();
             _service = service;
         }
         [HttpGet]
@@ -23,9 +29,11 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Get(id));
         }
         [HttpPost]
-        public IActionResult Create(FarmDTO farm)
+        public IActionResult Create(FarmModel farm)
         {
-            int result = _service.Create(farm);
+            var farmDTO = _mapper.Map<FarmDTO>(farm);
+            farmDTO.CreateTime = DateTime.Now;
+            int result = _service.Create(farmDTO);
             if (result != -1)
                 return Ok();
             else
@@ -38,9 +46,10 @@ namespace InnoGotchi.Web.Controllers
             return Ok();
         }
         [HttpPut]
-        public IActionResult Update(FarmDTO farm)
+        public IActionResult Update(FarmModel farm)
         {
-            _service.Update(farm);
+            var farmDTO = _mapper.Map<FarmDTO>(farm);
+            _service.Update(farmDTO);
             return Ok();
         }
     }

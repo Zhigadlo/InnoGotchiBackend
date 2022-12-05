@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -28,22 +29,22 @@ namespace InnnoGotchi.DAL.Respositories
 
         public IEnumerable<Farm> Find(Func<Farm, bool> predicate)
         {
-            return _context.Farms.Where(predicate);
+            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).Where(predicate);
         }
 
         public Farm? First(Func<Farm, bool> predicate)
         {
-            return _context.Farms.FirstOrDefault(predicate);
+            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).FirstOrDefault(predicate);
         }
 
         public Farm? Get(int id)
         {
-            return _context.Farms.FirstOrDefault(f => f.Id == id);
+            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).FirstOrDefault(f => f.Id == id);
         }
 
         public IEnumerable<Farm> GetAll()
         {
-            return _context.Farms;
+            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets);
         }
 
         public void Update(Farm item)

@@ -16,10 +16,6 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.HasMany(f => f.Pets)
                    .WithOne(p => p.Farm)
                    .HasForeignKey(p => p.FarmId);
-
-            builder.HasOne(f => f.Owner)
-                   .WithOne(u => u.Farm)
-                   .HasPrincipalKey<User>(f => f.FarmId);
         }
     }
 }
