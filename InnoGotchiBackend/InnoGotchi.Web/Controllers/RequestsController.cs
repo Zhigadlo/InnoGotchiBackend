@@ -1,5 +1,8 @@
-﻿using InnoGotchi.BLL.DTO;
+﻿using AutoMapper;
+using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Mapper;
+using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
@@ -8,9 +11,11 @@ namespace InnoGotchi.Web.Controllers
     public class RequestsController : Controller
     {
         private RequestService _service;
-
+        private IMapper _mapper;
         public RequestsController(RequestService service)
         {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
+            _mapper = config.CreateMapper();
             _service = service;
         }
 
@@ -34,19 +39,29 @@ namespace InnoGotchi.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ColoborationRequestDTO request)
+        public IActionResult Create(RequestModel request)
         {
-            int result = _service.Create(request);
+            var requestDTO = _mapper.Map<ColoborationRequestDTO>(request);
+            requestDTO.IsConfirmed = false;
+            requestDTO.Date = DateTime.Now;
+            int result = _service.Create(requestDTO);
             if (result != -1)
                 return Ok();
             else
                 return BadRequest();
         }
         [HttpPut]
-        public IActionResult Update(ColoborationRequestDTO request)
+        public IActionResult Update(int id, bool isConfirmed)
         {
-            _service.Update(request);
-            return Ok();
+            ColoborationRequestDTO? request = _service.Get(id);
+            if(request != null)
+            {
+                request.IsConfirmed = isConfirmed;
+                _service.Update(request);
+                return Ok();
+            }
+            else
+                return BadRequest();
         }
     }
 }

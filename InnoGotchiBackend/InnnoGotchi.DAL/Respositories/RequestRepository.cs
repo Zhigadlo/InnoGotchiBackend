@@ -45,8 +45,12 @@ namespace InnnoGotchi.DAL.Respositories
             ColoborationRequest? request = _context.Requests.Include(r => r.RequestOwner)
                                                             .Include(r => r.RequestReceipient)
                                                             .FirstOrDefault(r => r.Id == id);
+
             if (request != null)
+            {
+                _context.Entry(request).State = EntityState.Detached;
                 return request;
+            }
             else
                 return null;
         }
@@ -60,6 +64,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public void Update(ColoborationRequest item)
         {
+            _context.Entry(item).State = EntityState.Detached;
             _context.Requests.Update(item);
         }
     }
