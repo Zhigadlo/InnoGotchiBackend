@@ -1,4 +1,5 @@
 ﻿using InnoGotchi.BLL.BusinessModels;
+using System.Text.Json.Serialization;
 
 namespace InnoGotchi.BLL.DTO
 {
@@ -6,8 +7,8 @@ namespace InnoGotchi.BLL.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int FeedingCount { get; set; }
-        public int DrinkingCount { get; set; }
+        public int FeedingCount { get; set; } = 1;
+        public int DrinkingCount { get; set; } = 1;
 
         public AppearanceDTO Appearance { get; set; }
 
@@ -19,6 +20,7 @@ namespace InnoGotchi.BLL.DTO
         public DateTime FirstHappinessDate { get; set; }
 
         public int FarmId { get; set; }
+        [JsonIgnore]
         public FarmDTO Farm { get; set; }
 
         public int Age => GetAge();

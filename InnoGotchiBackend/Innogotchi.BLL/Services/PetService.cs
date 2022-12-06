@@ -25,8 +25,6 @@ namespace InnoGotchi.BLL.Services
             if (pet != null)
                 throw new Exception("There is pet with such name");
             Farm? farm = _database.Farms.First(f => f.Id == item.FarmId);
-            if (farm == null)
-                throw new Exception("There is no such farm");
 
             Pet newPet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(newPet);
@@ -67,6 +65,7 @@ namespace InnoGotchi.BLL.Services
             if (pet != null)
             {
                 _database.Pets.Delete(id);
+                _database.SaveChanges();
             }
         }
         public void Feed(int id)

@@ -1,5 +1,8 @@
-﻿using InnoGotchi.BLL.DTO;
+﻿using AutoMapper;
+using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Mapper;
+using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
@@ -8,9 +11,12 @@ namespace InnoGotchi.Web.Controllers
     public class PetsController : Controller
     {
         private PetService _service;
+        private IMapper _mapper;
 
         public PetsController(PetService service)
         {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
+            _mapper = config.CreateMapper();
             _service = service;
         }
         [HttpGet]
@@ -25,16 +31,29 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Get(id));
         }
         [HttpPost]
-        public IActionResult Create(PetDTO pet)
+        public IActionResult Create(PetModel pet)
         {
-            return Ok(_service.Create(pet));
+            var petDTO = _mapper.Map<PetDTO>(pet);
+            petDTO.CreateTime = DateTime.Now;
+            petDTO.FirstHappinessDate = DateTime.Now;
+            petDTO.LastDrinkingTime = DateTime.Now;
+            petDTO.LastFeedingTime = DateTime.Now;
+            return Ok(_service.Create(petDTO));
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(PetDTO item)
+        [HttpPut]
+        public IActionResult Update(int id, string newName)
         {
-            _service.Update(item);
-            return Ok();
+            PetDTO? petDTO = _service.Get(id);
+            
+            if (petDTO != null)
+            {
+                petDTO.Name = newName;
+                _service.Update(petDTO);
+                return Ok();
+            }
+            else
+                return BadRequest();
         }
 
         [HttpDelete("{id}")]

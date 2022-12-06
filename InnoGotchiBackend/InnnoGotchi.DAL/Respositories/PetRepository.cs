@@ -49,6 +49,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public void Update(Pet item)
         {
+            _context.ChangeTracker.Clear();
             _context.Pets.Update(item);
         }
     }

@@ -9,10 +9,9 @@ namespace InnoGotchi.BLL.Validation
         {
             RuleFor(p => p.Name).NotEmpty().NotNull();
             RuleFor(p => p.Appearance).NotEmpty().NotNull();
-            RuleFor(p => p.Farm).NotEmpty().NotNull();
+            RuleFor(p => p.FarmId).NotEmpty().NotNull();
             RuleFor(p => p.CreateTime).NotEmpty()
-                                      .NotNull()
-                                      .LessThan(p => p.DeadTime);
+                                      .NotNull();
         }
     }
 }
