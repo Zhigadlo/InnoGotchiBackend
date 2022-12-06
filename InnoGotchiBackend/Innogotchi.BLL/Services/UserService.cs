@@ -65,6 +65,15 @@ namespace InnoGotchi.BLL.Services
                 _database.SaveChanges();
             }
         }
+        public UserDTO FindUserByEmailAndPassword(string email, string password)
+        {
+            User? user = _database.Users.First(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
+            if (user != null)
+                return _mapper.Map<UserDTO>(user);
+            else
+                return null;
+        }
+
         public void Delete(int id)
         {
             _database.Users.Delete(id);

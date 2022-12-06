@@ -4,6 +4,11 @@ using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System;
+using InnoGotchi.Web.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace InnoGotchi.Web.Controllers
 {
@@ -50,6 +55,51 @@ namespace InnoGotchi.Web.Controllers
             var userDTO = _mapper.Map<UserDTO>(user);
             _service.Update(userDTO);
             return Ok();
+        }
+
+        [HttpPost("/token")]
+        public IActionResult Token(string email, string password)
+        {
+            var identity = GetIdentity(email, password);
+            if (identity == null)
+            {
+                return BadRequest(new { errorText = "Invalid email or password." });
+            }
+
+            var now = DateTime.UtcNow;
+
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new
+            {
+                access_token = encodedJwt
+            };
+
+            return Json(response);
+        }
+        private ClaimsIdentity GetIdentity(string email, string password)
+        {
+            UserDTO? person = _service.FindUserByEmailAndPassword(email, password);
+            if (person != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email)
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            return null;
         }
     }
 }

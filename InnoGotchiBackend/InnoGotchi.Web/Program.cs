@@ -4,7 +4,10 @@ using InnnoGotchi.DAL.Interfaces;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.Mapper;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,22 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.ISSUER,
+                        ValidAudience = AuthOptions.AUDIENCE,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
 var config = new MapperConfiguration(cnf => cnf.AddProfile<MapperProfile>());
 builder.Services.AddTransient<IMapper>(x => new Mapper(config));
 builder.Services.AddTransient<IUnitOfWork, InnoGotchiUnitOfWork>();
@@ -33,6 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
