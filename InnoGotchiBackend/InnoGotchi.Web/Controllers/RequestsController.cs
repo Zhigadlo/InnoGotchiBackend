@@ -3,10 +3,12 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Requests")]
     public class RequestsController : Controller
     {
@@ -54,7 +56,7 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Update(int id, bool isConfirmed)
         {
             ColoborationRequestDTO? request = _service.Get(id);
-            if(request != null)
+            if (request != null)
             {
                 request.IsConfirmed = isConfirmed;
                 _service.Update(request);

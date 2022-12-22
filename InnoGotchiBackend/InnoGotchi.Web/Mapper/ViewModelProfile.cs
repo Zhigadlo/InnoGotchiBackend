@@ -6,7 +6,7 @@ namespace InnoGotchi.Web.Mapper
 {
     public class ViewModelProfile : Profile
     {
-        public ViewModelProfile() 
+        public ViewModelProfile()
         {
             CreateMap<UserDTO, UserModel>().ReverseMap();
             CreateMap<FarmDTO, FarmModel>().ReverseMap();

@@ -3,10 +3,12 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Pets")]
     public class PetsController : Controller
     {
@@ -19,6 +21,7 @@ namespace InnoGotchi.Web.Controllers
             _mapper = config.CreateMapper();
             _service = service;
         }
+
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -30,6 +33,7 @@ namespace InnoGotchi.Web.Controllers
         {
             return Ok(_service.Get(id));
         }
+
         [HttpPost]
         public IActionResult Create(PetModel pet)
         {
@@ -45,7 +49,7 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Update(int id, string newName)
         {
             PetDTO? petDTO = _service.Get(id);
-            
+
             if (petDTO != null)
             {
                 petDTO.Name = newName;
@@ -68,6 +72,7 @@ namespace InnoGotchi.Web.Controllers
         {
             _service.Feed(id);
         }
+
         [HttpPut("drink")]
         public void Drink(int id)
         {

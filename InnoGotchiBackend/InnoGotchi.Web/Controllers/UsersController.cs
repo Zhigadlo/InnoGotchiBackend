@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
+using InnnoGotchi.DAL.Entities;
 using InnoGotchi.BLL.DTO;
+using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System;
 using InnoGotchi.Web.Options;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace InnoGotchi.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Users")]
     public class UsersController : Controller
     {
@@ -57,7 +60,15 @@ namespace InnoGotchi.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("/token")]
+        [Authorize]
+        [HttpGet("authUser")]
+        public IActionResult GetAuthorizedUser()
+        {
+            return Json(_service.Get(int.Parse(User.FindFirstValue("user_id"))));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("token")]
         public IActionResult Token(string email, string password)
         {
             var identity = GetIdentity(email, password);
@@ -67,7 +78,6 @@ namespace InnoGotchi.Web.Controllers
             }
 
             var now = DateTime.UtcNow;
-
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
@@ -75,14 +85,8 @@ namespace InnoGotchi.Web.Controllers
                     claims: identity.Claims,
                     expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
-            {
-                access_token = encodedJwt
-            };
-
-            return Json(response);
+            return Json(new JwtSecurityTokenHandler().WriteToken(jwt));
         }
         private ClaimsIdentity GetIdentity(string email, string password)
         {
@@ -91,7 +95,8 @@ namespace InnoGotchi.Web.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
+                    new Claim("user_id", person.Id.ToString())
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

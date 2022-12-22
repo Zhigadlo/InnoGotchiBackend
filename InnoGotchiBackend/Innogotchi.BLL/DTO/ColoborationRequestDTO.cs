@@ -5,7 +5,7 @@ namespace InnoGotchi.BLL.DTO
 {
     public class ColoborationRequestDTO
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public int RequestOwnerId { get; set; }
         [JsonIgnore]
         public User RequestOwner { get; set; }

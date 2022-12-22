@@ -9,7 +9,7 @@ namespace InnoGotchi.BLL.Validation
         {
             RuleFor(r => r.IsConfirmed).NotNull();
             RuleFor(r => r.Date).NotEmpty().NotNull();
-            RuleFor(r => r.RequestOwnerId).NotEmpty().NotNull().NotEqual(r => r.RequestReceipientId); 
+            RuleFor(r => r.RequestOwnerId).NotEmpty().NotNull().NotEqual(r => r.RequestReceipientId);
             RuleFor(r => r.RequestReceipientId).NotEmpty().NotNull();
         }
     }
