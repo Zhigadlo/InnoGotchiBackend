@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using InnnoGotchi.DAL.Entities;
 using InnoGotchi.BLL.DTO;
-using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
@@ -36,8 +34,9 @@ namespace InnoGotchi.Web.Controllers
         {
             return Ok(_service.Get(id));
         }
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Create(UserModel user)
+        public IActionResult Create([FromForm] UserModel user)
         {
             var userDTO = _mapper.Map<UserDTO>(user);
             int result = _service.Create(userDTO);
@@ -88,6 +87,14 @@ namespace InnoGotchi.Web.Controllers
 
             return Json(new JwtSecurityTokenHandler().WriteToken(jwt));
         }
+
+        [AllowAnonymous]
+        [HttpGet("{email}&{password}")]
+        public UserDTO? GetUser(string email, string password)
+        {
+            return _service.FindUserByEmailAndPassword(email, password);
+        }
+
         private ClaimsIdentity GetIdentity(string email, string password)
         {
             UserDTO? person = _service.FindUserByEmailAndPassword(email, password);

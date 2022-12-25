@@ -10,7 +10,7 @@ namespace InnoGotchi.BLL.DTO
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string? AvatarURL { get; set; }
+        public byte[]? Avatar { get; set; }
 
         [JsonIgnore]
         public List<ColoborationRequest> SentRequests { get; set; }

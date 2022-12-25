@@ -10,7 +10,7 @@ namespace InnnoGotchi.DAL.Entities
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public string? AvatarURL { get; set; }
+        public byte[]? Avatar { get; set; }
 
         public List<ColoborationRequest> SentRequests { get; set; }
         public List<ColoborationRequest> ReceivedRequests { get; set; }

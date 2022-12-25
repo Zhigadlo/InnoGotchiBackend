@@ -12,7 +12,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(u => u.Id).ValueGeneratedOnAdd();
             builder.Property(u => u.FirstName);
             builder.Property(u => u.LastName);
-            builder.Property(u => u.AvatarURL);
+            builder.Property(u => u.Avatar);
             builder.Property(u => u.Email);
 
             builder.HasMany(u => u.SentRequests)
