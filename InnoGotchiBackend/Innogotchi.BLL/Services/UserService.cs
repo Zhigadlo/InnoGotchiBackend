@@ -65,6 +65,18 @@ namespace InnoGotchi.BLL.Services
                 _database.SaveChanges();
             }
         }
+
+        public void UpdateAvatar(int id, byte[] newAvatar)
+        {
+            User? user = _database.Users.First(u => u.Id == id);
+            user.Avatar = newAvatar;
+            var result = _validator.Validate(user);
+            if(result.IsValid)
+            {
+                _database.Users.Update(user);
+                _database.SaveChanges();
+            }
+        }
         
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {

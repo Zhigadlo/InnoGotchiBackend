@@ -59,6 +59,13 @@ namespace InnoGotchi.Web.Controllers
             return Ok();
         }
 
+        [HttpPut("avatarChange")]
+        public IActionResult AvatarUpdate(int Id, byte[] Avatar)
+        {
+            _service.UpdateAvatar(Id, Avatar);
+            return Ok();
+        }
+
         [Authorize]
         [HttpGet("authUser")]
         public IActionResult GetAuthorizedUser()
