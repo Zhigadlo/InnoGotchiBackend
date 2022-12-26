@@ -9,5 +9,6 @@
         void Create(T item);
         void Update(T item);
         void Delete(int id);
+        bool Contains(Func<T, bool> predicate);
     }
 }

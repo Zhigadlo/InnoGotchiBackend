@@ -21,8 +21,7 @@ namespace InnoGotchi.BLL.Services
         }
         public int Create(PetDTO item)
         {
-            Pet? pet = _database.Pets.First(p => p.Name == item.Name);
-            if (pet != null)
+            if (!_database.Pets.Contains(p => p.Name == item.Name))
                 throw new Exception("There is pet with such name");
             Farm? farm = _database.Farms.First(f => f.Id == item.FarmId);
 
@@ -49,7 +48,7 @@ namespace InnoGotchi.BLL.Services
         {
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
         }
-        public void Update(PetDTO item)
+        public bool Update(PetDTO item)
         {
             Pet pet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(pet);
@@ -57,16 +56,22 @@ namespace InnoGotchi.BLL.Services
             {
                 _database.Pets.Update(pet);
                 _database.SaveChanges();
+                return true;
             }
+
+            return false;
         }
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             var pet = _database.Pets.First(p => p.Id == id);
             if (pet != null)
             {
                 _database.Pets.Delete(id);
                 _database.SaveChanges();
+                return true;
             }
+
+            return false;
         }
         public void Feed(int id)
         {

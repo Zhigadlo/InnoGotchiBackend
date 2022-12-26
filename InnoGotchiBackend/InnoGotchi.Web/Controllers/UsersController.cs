@@ -55,15 +55,29 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Update(UserModel user)
         {
             var userDTO = _mapper.Map<UserDTO>(user);
-            _service.Update(userDTO);
-            return Ok();
+            if(_service.Update(userDTO))
+                return Ok();
+            else
+                return BadRequest();
         }
 
         [HttpPut("avatarChange")]
         public IActionResult AvatarUpdate(int Id, byte[] Avatar)
         {
-            _service.UpdateAvatar(Id, Avatar);
-            return Ok();
+            if (_service.UpdateAvatar(Id, Avatar))
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("passwordChange")]
+        public IActionResult PasswordUpdate(int Id, string OldPassword, 
+                                            string NewPassword, string ConfirmPassword)
+        {
+            if(_service.UpdatePassword(Id, OldPassword, NewPassword, ConfirmPassword))
+                return Ok();
+            else
+                return BadRequest();
         }
 
         [Authorize]

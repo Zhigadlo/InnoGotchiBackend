@@ -22,13 +22,9 @@ namespace InnoGotchi.BLL.Services
         }
         public int Create(UserDTO item)
         {
-            User? user = _database.Users.First(u => u.Email == item.Email);
-
-            if (user != null)
-            {
+            if (_database.Users.Contains(u => u.Email == item.Email))
                 throw new Exception("This email is already in use");
-            }
-
+            
             User newUser = _mapper.Map<User>(item);
             var result = _validator.Validate(newUser);
             if (result.IsValid)
@@ -41,7 +37,6 @@ namespace InnoGotchi.BLL.Services
             else
                 return -1;
         }
-
         public UserDTO? Get(int id)
         {
             User? user = _database.Users.Get(id);
@@ -54,7 +49,7 @@ namespace InnoGotchi.BLL.Services
         {
             return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.GetAll());
         }
-        public void Update(UserDTO item)
+        public bool Update(UserDTO item)
         {
             User user = _mapper.Map<User>(item);
             user.PasswordHash = PasswordToHash(item.Password);
@@ -63,21 +58,38 @@ namespace InnoGotchi.BLL.Services
             {
                 _database.Users.Update(user);
                 _database.SaveChanges();
+                return true;
             }
-        }
 
-        public void UpdateAvatar(int id, byte[] newAvatar)
+            return false;
+        }
+        public bool UpdateAvatar(int id, byte[] newAvatar)
         {
             User? user = _database.Users.First(u => u.Id == id);
             user.Avatar = newAvatar;
             var result = _validator.Validate(user);
-            if(result.IsValid)
+            if (result.IsValid)
             {
                 _database.Users.Update(user);
                 _database.SaveChanges();
+                return true;
             }
+            else
+                return false;
         }
-        
+        public bool UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        {
+            User? user = _database.Users.Get(id);
+            if(user != null && user.PasswordHash == PasswordToHash(oldPassword) && newPassword == confirmPassword)
+            {
+                user.PasswordHash = PasswordToHash(newPassword);
+                _database.Users.Update(user);
+                _database.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
             User? user = _database.Users.First(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
@@ -86,11 +98,15 @@ namespace InnoGotchi.BLL.Services
             else
                 return null;
         }
-
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            _database.Users.Delete(id);
-            _database.SaveChanges();
+            if (_database.Pets.Contains(p => p.Id == id))
+            {
+                _database.Users.Delete(id);
+                _database.SaveChanges();
+                return true;
+            }
+            return false;
         }
         private string PasswordToHash(string password)
         {

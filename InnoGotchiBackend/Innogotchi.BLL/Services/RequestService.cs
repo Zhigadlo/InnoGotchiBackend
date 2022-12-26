@@ -33,10 +33,16 @@ namespace InnoGotchi.BLL.Services
                 return -1;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            _database.Requests.Delete(id);
-            _database.SaveChanges();
+            if (_database.Requests.Contains(r => r.Id == id))
+            {
+                _database.Requests.Delete(id);
+                _database.SaveChanges();
+                return true;
+            }
+
+            return false;
         }
 
         public ColoborationRequestDTO? Get(int id)
@@ -55,7 +61,7 @@ namespace InnoGotchi.BLL.Services
             return _mapper.Map<IEnumerable<ColoborationRequestDTO>>(_database.Requests.GetAll());
         }
 
-        public void Update(ColoborationRequestDTO item)
+        public bool Update(ColoborationRequestDTO item)
         {
             ColoborationRequest request = _mapper.Map<ColoborationRequest>(item);
             var result = _validator.Validate(request);
@@ -63,8 +69,10 @@ namespace InnoGotchi.BLL.Services
             {
                 _database.Requests.Update(request);
                 _database.SaveChanges();
+                return true;
             }
 
+            return false;
         }
     }
 }

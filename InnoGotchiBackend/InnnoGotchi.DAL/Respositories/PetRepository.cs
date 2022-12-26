@@ -12,6 +12,15 @@ namespace InnnoGotchi.DAL.Respositories
             _context = context;
         }
 
+        public bool Contains(Func<Pet, bool> predicate)
+        {
+            Pet? pet = _context.Pets.FirstOrDefault(predicate);
+            if(pet == null)
+                return false;
+            else
+                return true;
+        }
+
         public void Create(Pet item)
         {
             _context.Pets.Add(item);

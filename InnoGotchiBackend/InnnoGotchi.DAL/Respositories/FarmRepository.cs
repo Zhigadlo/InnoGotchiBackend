@@ -13,6 +13,15 @@ namespace InnnoGotchi.DAL.Respositories
             _context = context;
         }
 
+        public bool Contains(Func<Farm, bool> predicate)
+        {
+            Farm? farm = _context.Farms.FirstOrDefault(predicate);
+            if(farm == null) 
+                return false;
+            else 
+                return true;
+        }
+
         public void Create(Farm item)
         {
             _context.Farms.Add(item);

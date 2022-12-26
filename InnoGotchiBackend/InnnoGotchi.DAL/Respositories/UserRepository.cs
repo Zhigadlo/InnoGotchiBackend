@@ -13,6 +13,15 @@ namespace InnnoGotchi.DAL.Respositories
             _context = context;
         }
 
+        public bool Contains(Func<User, bool> predicate)
+        {
+            User? user = _context.Users.FirstOrDefault();
+            if (user == null)
+                return false;
+            else
+                return true;
+        }
+
         public void Create(User item)
         {
             _context.Users.Add(item);

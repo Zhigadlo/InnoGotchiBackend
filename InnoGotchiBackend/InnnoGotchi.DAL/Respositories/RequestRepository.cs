@@ -12,6 +12,16 @@ namespace InnnoGotchi.DAL.Respositories
         {
             _context = context;
         }
+
+        public bool Contains(Func<ColoborationRequest, bool> predicate)
+        {
+            ColoborationRequest? request = _context.Requests.FirstOrDefault(predicate);
+            if(request == null) 
+                return false;
+
+            return true;
+        }
+
         public void Create(ColoborationRequest item)
         {
             _context.Requests.Add(item);
