@@ -36,8 +36,10 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return Ok();
+            if(_service.Delete(id))
+                return Ok();
+            else
+                return BadRequest();
         }
 
         [HttpPost]
@@ -48,7 +50,7 @@ namespace InnoGotchi.Web.Controllers
             requestDTO.Date = DateTime.Now;
             int result = _service.Create(requestDTO);
             if (result != -1)
-                return Ok();
+                return Ok(result);
             else
                 return BadRequest();
         }
@@ -59,8 +61,10 @@ namespace InnoGotchi.Web.Controllers
             if (request != null)
             {
                 request.IsConfirmed = isConfirmed;
-                _service.Update(request);
-                return Ok();
+                if(_service.Update(request))
+                    return Ok();
+                else
+                    return BadRequest();
             }
             else
                 return BadRequest();

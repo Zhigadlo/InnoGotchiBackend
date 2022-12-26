@@ -42,7 +42,11 @@ namespace InnoGotchi.Web.Controllers
             petDTO.FirstHappinessDate = DateTime.Now;
             petDTO.LastDrinkingTime = DateTime.Now;
             petDTO.LastFeedingTime = DateTime.Now;
-            return Ok(_service.Create(petDTO));
+            var result = _service.Create(petDTO);
+            if(result != -1)
+                return Ok(result);
+            else
+                return BadRequest();
         }
 
         [HttpPut]
@@ -53,8 +57,10 @@ namespace InnoGotchi.Web.Controllers
             if (petDTO != null)
             {
                 petDTO.Name = newName;
-                _service.Update(petDTO);
-                return Ok();
+                if(_service.Update(petDTO))
+                    return Ok();
+                else
+                    return BadRequest();
             }
             else
                 return BadRequest();
@@ -63,8 +69,10 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return Ok();
+            if(_service.Delete(id))
+                return Ok();
+            else
+                return BadRequest();
         }
 
         [HttpPut("feed")]

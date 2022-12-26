@@ -48,8 +48,10 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return Ok();
+            if(_service.Delete(id))
+                return Ok();
+
+            return BadRequest();
         }
         [HttpPut]
         public IActionResult Update(UserModel user)

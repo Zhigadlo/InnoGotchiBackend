@@ -37,22 +37,26 @@ namespace InnoGotchi.Web.Controllers
             farmDTO.CreateTime = DateTime.Now;
             int result = _service.Create(farmDTO);
             if (result != -1)
-                return Ok();
+                return Ok(result);
             else
                 return BadRequest();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return Ok();
+            if (_service.Delete(id))
+                return Ok();
+            else
+                return BadRequest();
         }
         [HttpPut]
         public IActionResult Update(FarmModel farm)
         {
             var farmDTO = _mapper.Map<FarmDTO>(farm);
-            _service.Update(farmDTO);
-            return Ok();
+            if(_service.Update(farmDTO))
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }
