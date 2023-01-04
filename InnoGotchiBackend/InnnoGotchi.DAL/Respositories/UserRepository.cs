@@ -15,7 +15,9 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<User, bool> predicate)
         {
-            User? user = _context.Users.FirstOrDefault();
+            User? user = _context.Users.Include(u => u.SentRequests)
+                                       .Include(u => u.ReceivedRequests)
+                                       .FirstOrDefault(predicate);
             if (user == null)
                 return false;
             else
@@ -45,6 +47,8 @@ namespace InnnoGotchi.DAL.Respositories
         {
             return _context.Users.Include(u => u.CollaboratedFarms)
                                  .Include(u => u.SentRequests)
+                                 .Include(u => u.ReceivedRequests)
+                                 .Include(u => u.Farm)
                                  .FirstOrDefault(predicate);
         }
 
@@ -52,6 +56,8 @@ namespace InnnoGotchi.DAL.Respositories
         {
             return _context.Users.Include(u => u.CollaboratedFarms)
                                  .Include(u => u.SentRequests)
+                                 .Include(u => u.ReceivedRequests)
+                                 .Include(u => u.Farm)
                                  .FirstOrDefault(u => u.Id == id);
         }
 
@@ -59,6 +65,7 @@ namespace InnnoGotchi.DAL.Respositories
         {
             return _context.Users.Include(u => u.CollaboratedFarms)
                                  .Include(u => u.SentRequests)
+                                 .Include(u => u.ReceivedRequests)
                                  .Include(u => u.Farm)
                                  .AsEnumerable();
         }

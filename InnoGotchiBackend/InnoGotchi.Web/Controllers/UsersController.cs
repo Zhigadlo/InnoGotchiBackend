@@ -105,7 +105,7 @@ namespace InnoGotchi.Web.Controllers
                     audience: AuthOptions.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    expires: now.AddHours(AuthOptions.LIFETIME),
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             return Json(new JwtSecurityTokenHandler().WriteToken(jwt));

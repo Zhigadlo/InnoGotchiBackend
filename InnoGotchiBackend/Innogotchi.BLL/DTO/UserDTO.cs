@@ -12,11 +12,8 @@ namespace InnoGotchi.BLL.DTO
         public string Password { get; set; }
         public byte[]? Avatar { get; set; }
 
-        [JsonIgnore]
-        public List<ColoborationRequest> SentRequests { get; set; }
-
-        [JsonIgnore]
-        public List<ColoborationRequest> ReceivedRequests { get; set; }
+        public List<ColoborationRequestDTO> SentRequests { get; set; }
+        public List<ColoborationRequestDTO> ReceivedRequests { get; set; }
 
         [JsonIgnore]
         public List<ColoborationRequestDTO> ColoborationRequests { get; set; } = new List<ColoborationRequestDTO>();
