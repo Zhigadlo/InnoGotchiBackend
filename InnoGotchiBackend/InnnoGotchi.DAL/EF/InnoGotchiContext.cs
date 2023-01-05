@@ -9,6 +9,7 @@ namespace InnnoGotchi.DAL.EF
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Farm> Farms { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
         public DbSet<ColoborationRequest> Requests { get; set; }
 
         public InnoGotchiContext(DbContextOptions<InnoGotchiContext> options) : base(options)
@@ -22,6 +23,7 @@ namespace InnnoGotchi.DAL.EF
             modelBuilder.ApplyConfiguration(new PetConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RequestConfiguration());
+            modelBuilder.ApplyConfiguration(new PictureConfiguration());
         }
     }
 }

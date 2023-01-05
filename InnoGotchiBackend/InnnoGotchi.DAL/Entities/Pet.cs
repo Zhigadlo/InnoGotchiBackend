@@ -10,7 +10,7 @@ namespace InnnoGotchi.DAL.Entities
         public int FeedingCount { get; set; }
         public int DrinkingCount { get; set; }
 
-        public Appearance Appearance { get; set; }
+        public string Appearance { get; set; }
 
         public int FarmId { get; set; }
         public Farm Farm { get; set; }

@@ -6,6 +6,7 @@ namespace InnnoGotchi.DAL.Interfaces
     {
         IRepository<Pet> Pets { get; }
         IRepository<User> Users { get; }
+        IRepository<Picture> Pictures { get; }
         IRepository<Farm> Farms { get; }
         IRepository<ColoborationRequest> Requests { get; }
         void SaveChanges();

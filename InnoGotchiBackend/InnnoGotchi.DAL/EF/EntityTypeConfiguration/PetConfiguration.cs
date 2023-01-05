@@ -12,7 +12,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Property(p => p.Name);
             builder.Property(p => p.CreateTime);
-            builder.OwnsOne(p => p.Appearance);
+            builder.Property(p => p.Appearance);
             builder.Property(p => p.DeadTime);
             builder.Property(p => p.FeedingCount);
             builder.Property(p => p.DrinkingCount);

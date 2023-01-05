@@ -12,6 +12,7 @@ namespace InnnoGotchi.DAL.Respositories
         private UserRepository _userRepository;
         private FarmRepository _farmRepository;
         private RequestRepository _requestRepository;
+        private PictureRepository _pictureRepository;
 
         public InnoGotchiUnitOfWork(DbContextOptions<InnoGotchiContext> innoGotchiOptions)
         {
@@ -20,6 +21,7 @@ namespace InnnoGotchi.DAL.Respositories
             _farmRepository = new FarmRepository(_innoGotchiContext);
             _userRepository = new UserRepository(_innoGotchiContext);
             _requestRepository = new RequestRepository(_innoGotchiContext);
+            _pictureRepository = new PictureRepository(_innoGotchiContext);
         }
         public IRepository<Pet> Pets
         {
@@ -31,15 +33,22 @@ namespace InnnoGotchi.DAL.Respositories
             get => _userRepository;
         }
 
-        public IRepository<Farm> Farms
+        public IRepository<Farm> Pictures
         {
-            get => _farmRepository;
+            get => _pictureRepository;
         }
 
         public IRepository<ColoborationRequest> Requests
         {
             get => _requestRepository;
         }
+
+        public IRepository<Farm> Farms
+        {
+            get => _farmRepository;
+        }
+
+        IRepository<Picture> IUnitOfWork.Pictures => throw new NotImplementedException();
 
         public void SaveChanges()
         {
