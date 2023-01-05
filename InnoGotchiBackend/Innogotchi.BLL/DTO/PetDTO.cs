@@ -10,7 +10,7 @@ namespace InnoGotchi.BLL.DTO
         public int FeedingCount { get; set; } = 1;
         public int DrinkingCount { get; set; } = 1;
 
-        public AppearanceDTO Appearance { get; set; }
+        public string Appearance { get; set; }
 
         public DateTime CreateTime { get; set; }
         public DateTime DeadTime { get; set; }

@@ -33,7 +33,7 @@ namespace InnnoGotchi.DAL.Respositories
             get => _userRepository;
         }
 
-        public IRepository<Farm> Pictures
+        public IRepository<Picture> Pictures
         {
             get => _pictureRepository;
         }
