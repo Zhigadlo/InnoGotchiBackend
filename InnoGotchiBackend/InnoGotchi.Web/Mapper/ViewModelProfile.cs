@@ -12,6 +12,7 @@ namespace InnoGotchi.Web.Mapper
             CreateMap<FarmDTO, FarmModel>().ReverseMap();
             CreateMap<PetDTO, PetModel>().ReverseMap();
             CreateMap<ColoborationRequestDTO, RequestModel>().ReverseMap();
+            CreateMap<PictureDTO, PictureModel>().ReverseMap();
         }
     }
 }
