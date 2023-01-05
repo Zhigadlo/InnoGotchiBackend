@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
 {
+    [Route("api/Pictures")]
     public class PicturesController : Controller
     {
         private PictureService _service;

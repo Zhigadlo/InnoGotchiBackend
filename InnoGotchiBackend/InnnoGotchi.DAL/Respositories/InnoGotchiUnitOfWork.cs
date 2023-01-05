@@ -48,8 +48,6 @@ namespace InnnoGotchi.DAL.Respositories
             get => _farmRepository;
         }
 
-        IRepository<Picture> IUnitOfWork.Pictures => throw new NotImplementedException();
-
         public void SaveChanges()
         {
             _innoGotchiContext.SaveChanges();

@@ -54,8 +54,7 @@ namespace InnoGotchi.BLL.Services
 
         public IEnumerable<PictureDTO> GetAll()
         {
-            IEnumerable<Picture> pictures = _database.Pictures.GetAll();
-            return _mapper.Map<IEnumerable<PictureDTO>>(pictures);
+            return _mapper.Map<IEnumerable<PictureDTO>>(_database.Pictures.GetAll());
         }
 
         public bool Update(PictureDTO item)
