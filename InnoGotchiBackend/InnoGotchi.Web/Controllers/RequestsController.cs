@@ -54,13 +54,13 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-        [HttpPut]
-        public IActionResult Update(int id, bool isConfirmed)
+        [HttpPut("confirm/{id}")]
+        public IActionResult ConfirmRequest(int id)
         {
             ColoborationRequestDTO? request = _service.Get(id);
             if (request != null)
             {
-                request.IsConfirmed = isConfirmed;
+                request.IsConfirmed = true;
                 if(_service.Update(request))
                     return Ok();
                 else

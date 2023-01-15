@@ -35,7 +35,7 @@ namespace InnoGotchi.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(PetModel pet)
+        public IActionResult Create([FromForm] PetModel pet)
         {
             var petDTO = _mapper.Map<PetDTO>(pet);
             petDTO.CreateTime = DateTime.Now;

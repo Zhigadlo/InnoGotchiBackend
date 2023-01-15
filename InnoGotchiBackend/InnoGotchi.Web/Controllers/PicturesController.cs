@@ -3,10 +3,12 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Pictures")]
     public class PicturesController : Controller
     {

@@ -42,7 +42,7 @@ builder.Services.AddTransient<PetService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<RequestService>();
 builder.Services.AddTransient<PictureService>();
-
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
