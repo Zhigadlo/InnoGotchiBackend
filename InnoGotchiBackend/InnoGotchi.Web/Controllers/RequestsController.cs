@@ -36,7 +36,7 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if(_service.Delete(id))
+            if (_service.Delete(id))
                 return Ok();
             else
                 return BadRequest();
@@ -61,7 +61,7 @@ namespace InnoGotchi.Web.Controllers
             if (request != null)
             {
                 request.IsConfirmed = true;
-                if(_service.Update(request))
+                if (_service.Update(request))
                     return Ok();
                 else
                     return BadRequest();

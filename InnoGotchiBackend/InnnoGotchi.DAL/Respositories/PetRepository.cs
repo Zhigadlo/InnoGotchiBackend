@@ -15,7 +15,7 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Contains(Func<Pet, bool> predicate)
         {
             Pet? pet = _context.Pets.FirstOrDefault(predicate);
-            if(pet == null)
+            if (pet == null)
                 return false;
             else
                 return true;

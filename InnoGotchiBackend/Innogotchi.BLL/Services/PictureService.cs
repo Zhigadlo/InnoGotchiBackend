@@ -61,7 +61,7 @@ namespace InnoGotchi.BLL.Services
         {
             Picture picture = _mapper.Map<Picture>(item);
             var result = _validator.Validate(picture);
-            if(result.IsValid)
+            if (result.IsValid)
             {
                 _database.Pictures.Update(picture);
                 _database.SaveChanges();

@@ -16,9 +16,9 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Contains(Func<Farm, bool> predicate)
         {
             Farm? farm = _context.Farms.FirstOrDefault(predicate);
-            if(farm == null) 
+            if (farm == null)
                 return false;
-            else 
+            else
                 return true;
         }
 

@@ -1,5 +1,4 @@
-﻿using InnnoGotchi.DAL.Entities;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace InnoGotchi.BLL.DTO
 {

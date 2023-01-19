@@ -19,11 +19,11 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
 
         private byte[] GetBytesFromImage(string path)
         {
-            using(FileStream fsstream = File.OpenRead(path))
+            using (FileStream fsstream = File.OpenRead(path))
             {
                 byte[] buffer = new byte[fsstream.Length];
                 fsstream.Read(buffer, 0, buffer.Length);
-                return buffer;  
+                return buffer;
             }
         }
 

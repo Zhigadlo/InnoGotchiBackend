@@ -24,7 +24,7 @@ namespace InnoGotchi.BLL.Services
         {
             if (_database.Users.Contains(u => u.Email == item.Email))
                 throw new Exception("This email is already in use");
-            
+
             User newUser = _mapper.Map<User>(item);
             var result = _validator.Validate(newUser);
             if (result.IsValid)
@@ -80,7 +80,7 @@ namespace InnoGotchi.BLL.Services
         public bool UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
         {
             User? user = _database.Users.Get(id);
-            if(user != null && user.PasswordHash == PasswordToHash(oldPassword) && newPassword == confirmPassword)
+            if (user != null && user.PasswordHash == PasswordToHash(oldPassword) && newPassword == confirmPassword)
             {
                 user.PasswordHash = PasswordToHash(newPassword);
                 _database.Users.Update(user);

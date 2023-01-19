@@ -53,7 +53,7 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Update(FarmModel farm)
         {
             var farmDTO = _mapper.Map<FarmDTO>(farm);
-            if(_service.Update(farmDTO))
+            if (_service.Update(farmDTO))
                 return Ok();
             else
                 return BadRequest();

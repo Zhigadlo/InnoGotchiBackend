@@ -1,6 +1,5 @@
 using AutoMapper;
 using InnnoGotchi.DAL.EF;
-using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.Mapper;
@@ -42,7 +41,7 @@ builder.Services.AddTransient<PetService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<RequestService>();
 builder.Services.AddTransient<PictureService>();
-    
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

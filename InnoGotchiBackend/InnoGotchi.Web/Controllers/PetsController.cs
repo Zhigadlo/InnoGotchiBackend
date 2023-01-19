@@ -43,7 +43,7 @@ namespace InnoGotchi.Web.Controllers
             petDTO.LastDrinkingTime = DateTime.Now;
             petDTO.LastFeedingTime = DateTime.Now;
             var result = _service.Create(petDTO);
-            if(result != -1)
+            if (result != -1)
                 return Ok(result);
             else
                 return BadRequest();
@@ -57,7 +57,7 @@ namespace InnoGotchi.Web.Controllers
             if (petDTO != null)
             {
                 petDTO.Name = newName;
-                if(_service.Update(petDTO))
+                if (_service.Update(petDTO))
                     return Ok();
                 else
                     return BadRequest();
@@ -69,7 +69,7 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if(_service.Delete(id))
+            if (_service.Delete(id))
                 return Ok();
             else
                 return BadRequest();

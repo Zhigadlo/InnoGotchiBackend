@@ -16,7 +16,7 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Contains(Func<ColoborationRequest, bool> predicate)
         {
             ColoborationRequest? request = _context.Requests.FirstOrDefault(predicate);
-            if(request == null) 
+            if (request == null)
                 return false;
 
             return true;

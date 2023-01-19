@@ -48,7 +48,7 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if(_service.Delete(id))
+            if (_service.Delete(id))
                 return Ok();
 
             return BadRequest();
@@ -57,7 +57,7 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Update(UserModel user)
         {
             var userDTO = _mapper.Map<UserDTO>(user);
-            if(_service.Update(userDTO))
+            if (_service.Update(userDTO))
                 return Ok();
             else
                 return BadRequest();
@@ -73,10 +73,10 @@ namespace InnoGotchi.Web.Controllers
         }
 
         [HttpPut("passwordChange")]
-        public IActionResult PasswordUpdate(int Id, string OldPassword, 
+        public IActionResult PasswordUpdate(int Id, string OldPassword,
                                             string NewPassword, string ConfirmPassword)
         {
-            if(_service.UpdatePassword(Id, OldPassword, NewPassword, ConfirmPassword))
+            if (_service.UpdatePassword(Id, OldPassword, NewPassword, ConfirmPassword))
                 return Ok();
             else
                 return BadRequest();

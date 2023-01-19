@@ -1,5 +1,4 @@
-﻿using InnoGotchi.BLL.BusinessModels;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace InnoGotchi.BLL.DTO
 {
@@ -22,52 +21,6 @@ namespace InnoGotchi.BLL.DTO
         public int FarmId { get; set; }
         [JsonIgnore]
         public FarmDTO Farm { get; set; }
-
-        public int Age => GetAge();
-        public int GetAge()
-        {
-            if (GetPetState() != PetState.Dead)
-                return (int)((DateTime.Now - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks / 365);
-            else
-                return (int)((DeadTime - CreateTime).Ticks / Globals.InnoGotchiDay.Ticks / 365);
-        }
-        public int HappinessDaysCount => (int)((DateTime.Now - FirstHappinessDate).Ticks / Globals.InnoGotchiDay.Ticks);
-
-
-        public double AverageFeedingPeriod => (DateTime.Now - CreateTime).Ticks / FeedingCount / Globals.InnoGotchiDay.Ticks;
-        public double AverageDrinkingPeriod => (DateTime.Now - CreateTime).Ticks / DrinkingCount / Globals.InnoGotchiDay.Ticks;
-
-
-        public PetState GetPetState()
-        {
-            if (GetHungryLavel() != HungerLavel.Dead
-                && GetThirstyLavel() != ThirstyLavel.Dead)
-                return PetState.Alive;
-            else
-                return PetState.Dead;
-        }
-        public HungerLavel GetHungryLavel()
-        {
-            if ((DateTime.Now - LastFeedingTime).Ticks > (Globals.FeedingPeriod - DateTime.MinValue).Ticks * 3)
-                return HungerLavel.Dead;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks * 2)
-                return HungerLavel.Hungry;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.FeedingPeriod.Ticks)
-                return HungerLavel.Normal;
-            else
-                return HungerLavel.Full;
-        }
-        public ThirstyLavel GetThirstyLavel()
-        {
-            if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks * 3)
-                return ThirstyLavel.Dead;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks * 2)
-                return ThirstyLavel.Thirsty;
-            else if ((DateTime.Now - LastFeedingTime).Ticks > Globals.DrinkingPeriod.Ticks)
-                return ThirstyLavel.Normal;
-            else
-                return ThirstyLavel.Full;
-        }
 
         public void Feed()
         {

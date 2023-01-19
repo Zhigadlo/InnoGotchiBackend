@@ -22,7 +22,7 @@ namespace InnoGotchi.BLL.Services
         public int Create(PetDTO item)
         {
             if (_database.Pets.Contains(p => p.Name == item.Name))
-                throw new Exception("There is pet with such name");
+                return -1;
             Farm? farm = _database.Farms.First(f => f.Id == item.FarmId);
 
             Pet newPet = _mapper.Map<Pet>(item);

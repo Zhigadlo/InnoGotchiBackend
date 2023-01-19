@@ -1,7 +1,6 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
-using System.Linq;
 
 namespace InnnoGotchi.DAL.Respositories
 {
