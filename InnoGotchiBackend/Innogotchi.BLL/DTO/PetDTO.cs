@@ -12,7 +12,6 @@ namespace InnoGotchi.BLL.DTO
         public string Appearance { get; set; }
 
         public DateTime CreateTime { get; set; }
-        public DateTime DeadTime { get; set; }
 
         public DateTime LastFeedingTime { get; set; }
         public DateTime LastDrinkingTime { get; set; }
@@ -24,12 +23,12 @@ namespace InnoGotchi.BLL.DTO
 
         public void Feed()
         {
-            LastDrinkingTime = DateTime.Now;
+            LastFeedingTime = DateTime.UtcNow;
             FeedingCount++;
         }
         public void Drink()
         {
-            LastDrinkingTime = DateTime.Now;
+            LastDrinkingTime = DateTime.UtcNow;
             DrinkingCount++;
         }
     }

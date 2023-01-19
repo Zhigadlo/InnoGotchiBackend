@@ -38,10 +38,10 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Create([FromForm] PetModel pet)
         {
             var petDTO = _mapper.Map<PetDTO>(pet);
-            petDTO.CreateTime = DateTime.Now;
-            petDTO.FirstHappinessDate = DateTime.Now;
-            petDTO.LastDrinkingTime = DateTime.Now;
-            petDTO.LastFeedingTime = DateTime.Now;
+            petDTO.CreateTime = DateTime.UtcNow;
+            petDTO.FirstHappinessDate = DateTime.UtcNow;
+            petDTO.LastDrinkingTime = DateTime.UtcNow;
+            petDTO.LastFeedingTime = DateTime.UtcNow;
             var result = _service.Create(petDTO);
             if (result != -1)
                 return Ok(result);
@@ -75,13 +75,13 @@ namespace InnoGotchi.Web.Controllers
                 return BadRequest();
         }
 
-        [HttpPut("feed")]
+        [HttpPut("feed/{id}")]
         public void Feed(int id)
         {
             _service.Feed(id);
         }
 
-        [HttpPut("drink")]
+        [HttpPut("drink/{id}")]
         public void Drink(int id)
         {
             _service.Drink(id);
