@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using InnnoGotchi.DAL.Entities;
-using InnnoGotchi.DAL.Interfaces;
+using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Validation;
@@ -9,11 +9,11 @@ namespace InnoGotchi.BLL.Services
 {
     public class PetService : IService<PetDTO>
     {
-        private IUnitOfWork _database;
+        private InnoGotchiUnitOfWork _database;
         private IMapper _mapper;
         private PetValidator _validator;
 
-        public PetService(IUnitOfWork uow, IMapper mapper)
+        public PetService(InnoGotchiUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;
@@ -47,6 +47,70 @@ namespace InnoGotchi.BLL.Services
         public IEnumerable<PetDTO> GetAll()
         {
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
+        }
+
+        public IEnumerable<PetDTO> GetPage(int page, string sortType)
+        {
+            int pageSize = 15;
+            switch (sortType)
+            {
+                case "name_asc":
+                    var result = _database.Pets.GetAll().OrderBy(p => p.Name).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "name_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p => p.Name).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "age_asc":
+                    result = _database.Pets.GetAll().OrderBy(p => DateTime.UtcNow - p.CreateTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "age_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p => DateTime.UtcNow - p.CreateTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "state_asc":
+                    result = _database.Pets.GetAll().OrderBy(p =>
+                    {
+                        if (p.LastDrinkingTime < p.LastFeedingTime)
+                        {
+                            return DateTime.UtcNow - p.LastDrinkingTime;
+                        }
+                        else
+                        {
+                            return DateTime.UtcNow - p.LastFeedingTime;
+                        }
+                    }).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "state_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p =>
+                    {
+                        if (p.LastDrinkingTime < p.LastFeedingTime)
+                        {
+                            return DateTime.UtcNow - p.LastDrinkingTime;
+                        }
+                        else
+                        {
+                            return DateTime.UtcNow - p.LastFeedingTime;
+                        }
+                    }).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "hunger_asc":
+                    result = _database.Pets.GetAll().OrderBy(p => p.LastFeedingTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "hunger_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p => p.LastFeedingTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "thirsty_asc":
+                    result = _database.Pets.GetAll().OrderBy(p => p.LastDrinkingTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "thirsty_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p => p.LastDrinkingTime).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                case "happiness_desc":
+                    result = _database.Pets.GetAll().OrderByDescending(p => DateTime.UtcNow - p.FirstHappinessDate).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+                default:
+                    result = _database.Pets.GetAll().OrderBy(p => DateTime.UtcNow - p.FirstHappinessDate).Skip((page - 1) * pageSize).Take(pageSize);
+                    return _mapper.Map<IEnumerable<PetDTO>>(result);
+            }
         }
         public bool Update(PetDTO item)
         {

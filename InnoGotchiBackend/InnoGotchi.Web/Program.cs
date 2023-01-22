@@ -35,7 +35,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var config = new MapperConfiguration(cnf => cnf.AddProfile<MapperProfile>());
 builder.Services.AddTransient<IMapper>(x => new Mapper(config));
-builder.Services.AddTransient<IUnitOfWork, InnoGotchiUnitOfWork>();
+//builder.Services.AddTransient<IUnitOfWork, InnoGotchiUnitOfWork>();
+builder.Services.AddTransient<InnoGotchiUnitOfWork>();
 builder.Services.AddTransient<FarmService>();
 builder.Services.AddTransient<PetService>();
 builder.Services.AddTransient<UserService>();

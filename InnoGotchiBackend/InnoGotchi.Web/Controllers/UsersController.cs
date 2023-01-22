@@ -24,6 +24,7 @@ namespace InnoGotchi.Web.Controllers
             _mapper = config.CreateMapper();
             _service = service;
         }
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll()
         {

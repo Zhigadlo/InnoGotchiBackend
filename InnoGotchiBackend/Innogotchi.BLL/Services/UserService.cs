@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Validation;
@@ -11,10 +12,10 @@ namespace InnoGotchi.BLL.Services
 {
     public class UserService : IService<UserDTO>
     {
-        private IUnitOfWork _database;
+        private InnoGotchiUnitOfWork _database;
         private IMapper _mapper;
         private UserValidator _validator;
-        public UserService(IUnitOfWork uow, IMapper mapper)
+        public UserService(InnoGotchiUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;

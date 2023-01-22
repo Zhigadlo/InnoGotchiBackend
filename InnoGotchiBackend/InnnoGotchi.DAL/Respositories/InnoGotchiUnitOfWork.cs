@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class InnoGotchiUnitOfWork : IUnitOfWork
+    public class InnoGotchiUnitOfWork
     {
         private InnoGotchiContext _innoGotchiContext;
         private PetRepository _petRepository;

@@ -22,6 +22,12 @@ namespace InnoGotchi.Web.Controllers
             _service = service;
         }
 
+        [HttpGet("{page}&{sortType}")]
+        public IActionResult GetPage(int page, string sortType)
+        {
+            return Ok(_service.GetPage(page, sortType));
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {

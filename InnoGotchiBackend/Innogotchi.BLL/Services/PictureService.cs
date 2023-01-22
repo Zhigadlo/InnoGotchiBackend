@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Validation;
@@ -9,11 +10,11 @@ namespace InnoGotchi.BLL.Services
 {
     public class PictureService : IService<PictureDTO>
     {
-        private IUnitOfWork _database;
+        private InnoGotchiUnitOfWork _database;
         private IMapper _mapper;
         private PictureValidator _validator;
 
-        public PictureService(IUnitOfWork uow, IMapper mapper)
+        public PictureService(InnoGotchiUnitOfWork uow, IMapper mapper)
         {
             _database = uow;
             _mapper = mapper;
