@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using InnnoGotchi.DAL.Entities;
-using InnnoGotchi.DAL.Interfaces;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;

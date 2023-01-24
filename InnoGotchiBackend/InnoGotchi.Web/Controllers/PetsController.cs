@@ -22,10 +22,11 @@ namespace InnoGotchi.Web.Controllers
             _service = service;
         }
 
-        [HttpGet("{page}&{sortType}")]
-        public IActionResult GetPage(int page, string sortType)
+        [HttpGet("{page}&{sortType}&{age}&{year}&{hungerLavel}&{feedingPeriod}&{thirstyLavel}&{drinkingPeriod}")]
+        public IActionResult GetPage(int page, string sortType, long age = 0, long year = 0,
+            long hungerLavel = -1, long feedingPeriod = 0, long thirstyLavel = -1, long drinkingPeriod = 0)
         {
-            return Ok(_service.GetPage(page, sortType));
+            return Ok(_service.GetPage(page, sortType, age, year, hungerLavel, feedingPeriod, thirstyLavel, drinkingPeriod));
         }
 
         [HttpGet]

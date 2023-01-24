@@ -50,9 +50,53 @@ namespace InnoGotchi.BLL.Services
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
         }
 
-        public PaginatedList<PetDTO> GetPage(int page, string sortType)
+        public PaginatedList<PetDTO> GetPage(int page, string sortType, long age, long year, long hungerLavel, long feedingPeriod, long thirstyLavel, long drinkingPeriod)
         {
             var pets = _database.Pets.GetAll();
+
+            if (age != 0 && year != 0)
+            {
+                pets = pets.Where(p =>
+                {
+                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
+                    {
+                        var life = p.DeadTime.Value.AddTicks(-p.CreateTime.Ticks);
+                        return life.Ticks >= age && life.Ticks < age + year;
+                    }
+                    else
+                    {
+                        var life = DateTime.UtcNow.AddTicks(-p.CreateTime.Ticks);
+                        return life.Ticks >= age && life.Ticks < age + year;
+                    }
+                });
+            }
+
+            if (hungerLavel != -1 && feedingPeriod != 0)
+            {
+                pets = pets.Where(p =>
+                {
+                    var hunger = (DateTime.UtcNow - p.LastFeedingTime).Ticks;
+                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
+                        return hunger > hungerLavel && hunger < hungerLavel + feedingPeriod;
+                    else
+                        return hunger > hungerLavel;
+
+
+                });
+            }
+
+            if (thirstyLavel != -1 && drinkingPeriod != 0)
+            {
+                pets = pets.Where(p =>
+                {
+                    var thirsty = (DateTime.UtcNow - p.LastDrinkingTime).Ticks;
+                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
+                        return thirsty > thirstyLavel && thirsty < thirstyLavel + drinkingPeriod;
+                    else
+                        return thirsty > thirstyLavel;
+                });
+            }
+
             int pageSize = 15;
             int totalPages = (int)Math.Ceiling(pets.Count() / (double)pageSize);
             if (page > totalPages)

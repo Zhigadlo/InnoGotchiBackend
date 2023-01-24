@@ -1,7 +1,4 @@
-﻿using InnoGotchi.BLL.DTO;
-using Microsoft.EntityFrameworkCore;
-
-namespace InnoGotchi.BLL.Models
+﻿namespace InnoGotchi.BLL.Models
 {
     public class PaginatedList<T> where T : class
     {

@@ -1,6 +1,5 @@
 using AutoMapper;
 using InnnoGotchi.DAL.EF;
-using InnnoGotchi.DAL.Interfaces;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.Mapper;
 using InnoGotchi.BLL.Services;
