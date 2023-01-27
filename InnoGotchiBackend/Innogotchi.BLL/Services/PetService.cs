@@ -50,7 +50,7 @@ namespace InnoGotchi.BLL.Services
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
         }
 
-        public PaginatedList<PetDTO> GetPage(int page, string sortType, long age, long year, long hungerLavel, long feedingPeriod, long thirstyLavel, long drinkingPeriod)
+        public PaginatedList<PetDTO> GetPage(int page, string sortType, long age, long year, int hungerStage, long feedingPeriod, bool isLastFeedingStage, int thirstyStage, long drinkingPeriod, bool isLastDrinkingStage)
         {
             var pets = _database.Pets.GetAll();
 
@@ -58,7 +58,7 @@ namespace InnoGotchi.BLL.Services
             {
                 pets = pets.Where(p =>
                 {
-                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
+                    if (p.DeadTime != DateTime.MinValue)
                     {
                         var life = p.DeadTime.Value.AddTicks(-p.CreateTime.Ticks);
                         return life.Ticks >= age && life.Ticks < age + year;
@@ -71,29 +71,31 @@ namespace InnoGotchi.BLL.Services
                 });
             }
 
-            if (hungerLavel != -1 && feedingPeriod != 0)
+            if (hungerStage != -1 && feedingPeriod != 0)
             {
+                var hungerLavel = hungerStage * feedingPeriod;
                 pets = pets.Where(p =>
                 {
-                    var hunger = (DateTime.UtcNow - p.LastFeedingTime).Ticks;
-                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
-                        return hunger > hungerLavel && hunger < hungerLavel + feedingPeriod;
-                    else
-                        return hunger > hungerLavel;
+                    var hungerTime = (DateTime.UtcNow - p.LastFeedingTime).Ticks;
+                    if (isLastFeedingStage)
+                        return hungerTime > hungerLavel;
 
-
+                    return hungerTime > hungerLavel && hungerTime < hungerLavel + feedingPeriod;
+                    
                 });
             }
 
-            if (thirstyLavel != -1 && drinkingPeriod != 0)
+            if (thirstyStage != -1 && drinkingPeriod != 0)
             {
+                var thirstyLavel = thirstyStage * drinkingPeriod;
                 pets = pets.Where(p =>
                 {
-                    var thirsty = (DateTime.UtcNow - p.LastDrinkingTime).Ticks;
-                    if (p.DeadTime != null && p.DeadTime != DateTime.MinValue)
-                        return thirsty > thirstyLavel && thirsty < thirstyLavel + drinkingPeriod;
-                    else
-                        return thirsty > thirstyLavel;
+                    var thirstyTime = (DateTime.UtcNow - p.LastDrinkingTime).Ticks;
+                    if (isLastDrinkingStage)
+                        return thirstyTime > thirstyLavel;
+                    
+                    return thirstyTime > thirstyLavel && thirstyTime < thirstyLavel + drinkingPeriod;
+                    
                 });
             }
 
@@ -157,10 +159,30 @@ namespace InnoGotchi.BLL.Services
                     sortedPets = pets.OrderByDescending(p => p.LastDrinkingTime).ToList();
                     break;
                 case "happiness_desc":
-                    sortedPets = pets.OrderByDescending(p => DateTime.UtcNow - p.FirstHappinessDate).ToList();
+                    sortedPets = pets.OrderByDescending(p =>
+                    {
+                        if (p.DeadTime != DateTime.MinValue)
+                        {
+                            return DateTime.MaxValue.Ticks;
+                        }
+                        else
+                        {
+                            return (p.DeadTime - p.FirstHappinessDate).Value.Ticks;
+                        }
+                    }).ToList();
                     break;
                 default:
-                    sortedPets = pets.OrderBy(p => DateTime.UtcNow - p.FirstHappinessDate).ToList();
+                    sortedPets = pets.OrderBy(p =>
+                    {
+                        if (p.DeadTime != DateTime.MinValue)
+                        {
+                            return DateTime.MaxValue.Ticks;
+                        }
+                        else
+                        {
+                            return (p.DeadTime - p.FirstHappinessDate).Value.Ticks;
+                        }
+                    }).ToList();
                     break;
             }
 
@@ -181,6 +203,7 @@ namespace InnoGotchi.BLL.Services
 
             return false;
         }
+        
         public bool Delete(int id)
         {
             var pet = _database.Pets.First(p => p.Id == id);
