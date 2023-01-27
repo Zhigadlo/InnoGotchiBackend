@@ -22,11 +22,11 @@ namespace InnoGotchi.Web.Controllers
             _service = service;
         }
 
-        [HttpGet("{page}&{sortType}&{age}&{year}&{hungerLavel}&{feedingPeriod}&{thirstyLavel}&{drinkingPeriod}")]
-        public IActionResult GetPage(int page, string sortType, long age = 0, long year = 0,
-            long hungerLavel = -1, long feedingPeriod = 0, long thirstyLavel = -1, long drinkingPeriod = 0)
+        [HttpGet("{page}&{sortType}&{age}&{year}&{hungerLavel}&{feedingPeriod}&{isLastFeedingStage}&{thirstyLavel}&{drinkingPeriod}&{isLastDrinkingStage}")]
+        public IActionResult GetPage(int page, string sortType, long age = 0, long year = 0, int hungerLavel = -1, long feedingPeriod = 0,
+            bool isLastFeedingStage = false, int thirstyLavel = -1, long drinkingPeriod = 0, bool isLastDrinkingStage = false)
         {
-            return Ok(_service.GetPage(page, sortType, age, year, hungerLavel, feedingPeriod, thirstyLavel, drinkingPeriod));
+            return Ok(_service.GetPage(page, sortType, age, year, hungerLavel, feedingPeriod, isLastFeedingStage, thirstyLavel, drinkingPeriod, isLastDrinkingStage));
         }
 
         [HttpGet]
@@ -64,6 +64,24 @@ namespace InnoGotchi.Web.Controllers
             if (petDTO != null)
             {
                 petDTO.Name = newName;
+                if (_service.Update(petDTO))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("death/{id}&{deathTime}")]
+        public IActionResult Death(int id, long deathTime)
+        {
+            PetDTO? petDTO = _service.Get(id);
+            if (petDTO != null)
+            {
+                if (petDTO.DeadTime != DateTime.MinValue)
+                    return Ok();
+                petDTO.DeadTime = DateTime.MinValue.AddTicks(deathTime);
                 if (_service.Update(petDTO))
                     return Ok();
                 else

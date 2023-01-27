@@ -12,6 +12,7 @@ namespace InnoGotchi.BLL.DTO
         public string Appearance { get; set; }
 
         public DateTime CreateTime { get; set; }
+        public DateTime DeadTime { get; set; }
 
         public DateTime LastFeedingTime { get; set; }
         public DateTime LastDrinkingTime { get; set; }
