@@ -1,5 +1,8 @@
 ﻿namespace InnoGotchi.Web.Models
 {
+    /// <summary>
+    /// Pet model that contains data from view
+    /// </summary>
     public class PetModel
     {
         public int Id { get; set; }

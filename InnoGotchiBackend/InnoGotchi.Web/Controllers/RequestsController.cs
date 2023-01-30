@@ -20,20 +20,32 @@ namespace InnoGotchi.Web.Controllers
             _mapper = config.CreateMapper();
             _service = service;
         }
-
+        /// <summary>
+        /// Gets all coloboration requests
+        /// </summary>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ColoborationRequestDTO>), 200)]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());
         }
-
+        /// <summary>
+        /// Gets coloboration request by id
+        /// </summary>
+        /// <param name="id">Request id</param>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ColoborationRequestDTO), 200)]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));
         }
-
+        /// <summary>
+        /// Deletes coloboration request by id
+        /// </summary>
+        /// <param name="id">Request id</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult Delete(int id)
         {
             if (_service.Delete(id))
@@ -41,8 +53,13 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Creates coloboration request
+        /// </summary>
+        /// <param name="request">Request model</param>
         [HttpPost]
+        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(400)]
         public IActionResult Create(RequestModel request)
         {
             var requestDTO = _mapper.Map<ColoborationRequestDTO>(request);
@@ -54,7 +71,13 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
+        /// <summary>
+        /// Confirms request by id
+        /// </summary>
+        /// <param name="id">Request id</param>
         [HttpPut("confirm/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult ConfirmRequest(int id)
         {
             ColoborationRequestDTO? request = _service.Get(id);

@@ -10,18 +10,15 @@
         /// Inserts item in database
         /// </summary>
         /// <param name="item"></param>
-        /// <returns></returns>
         int Create(T item);
         /// <summary>
         /// Gets item by id from database
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
         T? Get(int id);
         /// <summary>
         /// Gets all items from database
         /// </summary>
-        /// <returns></returns>
         IEnumerable<T> GetAll();
         /// <summary>
         /// Updates item in database

@@ -1,5 +1,8 @@
 ﻿namespace InnoGotchi.Web.Models
 {
+    /// <summary>
+    /// User model that contains data from view
+    /// </summary>
     public class UserModel
     {
         public int Id { get; set; }

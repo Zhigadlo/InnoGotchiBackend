@@ -22,32 +22,55 @@ namespace InnoGotchi.Web.Controllers
             _mapper = config.CreateMapper();
             _service = service;
         }
+        /// <summary>
+        /// Gets PaginatedList object by page with sorting, filtration and page pets list and returns this object.
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <param name="sortType">Sort type</param>
+        /// <param name="filterModel">Filter model</param>
 
         [HttpGet("getPage")]
+        [ProducesResponseType(typeof(PaginatedList<PetDTO>) ,200)]
         public IActionResult GetPage(int page, string sortType, PetFilterModel filterModel)
         {
             return Ok(_service.GetPage(page, sortType, filterModel));
         }
-
+        /// <summary>
+        /// Returns all pets
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PetDTO>), 200)]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());
         }
-
+        /// <summary>
+        /// Returns all pet names
+        /// </summary>
         [HttpGet("getAllNames")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public IActionResult GetAllNames()
         {
             return Ok(_service.GetAll().Select(p => p.Name));
         }
-
+        /// <summary>
+        /// Gets pet by id 
+        /// </summary>
+        /// <param name="id">Pet id</param>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PetDTO), 200)]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));
         }
-
+        /// <summary>
+        /// Creates pet and returns created pet id
+        /// </summary>
+        /// <param name="pet">Pet model</param>
         [HttpPost]
+        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(400)]
         public IActionResult Create([FromForm] PetModel pet)
         {
             var petDTO = _mapper.Map<PetDTO>(pet);
@@ -61,8 +84,14 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Updates pet name by id
+        /// </summary>
+        /// <param name="id">Pet id</param>
+        /// <param name="newName">New pet name</param>
         [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult Update(int id, string newName)
         {
             PetDTO? petDTO = _service.Get(id);
@@ -78,8 +107,14 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Sets death time to pet by id
+        /// </summary>
+        /// <param name="id">Pet id</param>
+        /// <param name="deathTime">Death time</param>
         [HttpPut("death/{id}&{deathTime}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult Death(int id, long deathTime)
         {
             PetDTO? petDTO = _service.Get(id);
@@ -97,8 +132,13 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Delets pet by id
+        /// </summary>
+        /// <param name="id">Pet id</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult Delete(int id)
         {
             if (_service.Delete(id))
@@ -106,13 +146,19 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Feeds pet by id
+        /// </summary>
+        /// <param name="id">Pet id</param>
         [HttpPut("feed/{id}")]
         public void Feed(int id)
         {
             _service.Feed(id);
         }
-
+        /// <summary>
+        /// Gives a drink to pet by id
+        /// </summary>
+        /// <param name="id">Pet id</param>
         [HttpPut("drink/{id}")]
         public void Drink(int id)
         {

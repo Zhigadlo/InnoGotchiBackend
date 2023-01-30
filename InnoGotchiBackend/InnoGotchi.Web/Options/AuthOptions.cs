@@ -3,6 +3,9 @@ using System.Text;
 
 namespace InnoGotchi.Web.Options
 {
+    /// <summary>
+    /// Contains options for jwt token
+    /// </summary>
     public class AuthOptions
     {
         public string Issuer { get; private set; }

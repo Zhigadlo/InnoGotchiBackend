@@ -21,20 +21,32 @@ namespace InnoGotchi.Web.Controllers
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
             _mapper = config.CreateMapper();
         }
-
+        /// <summary>
+        /// Gets all pictures
+        /// </summary>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PictureDTO>), 200)]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());
         }
-
+        /// <summary>
+        /// Gets picture by id
+        /// </summary>
+        /// <param name="id">Picture id</param>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PictureDTO), 200)]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));
         }
-
+        /// <summary>
+        /// Creates picture
+        /// </summary>
+        /// <param name="picture">Picture model</param>
         [HttpPost]
+        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(400)]
         public IActionResult Create(PictureModel picture)
         {
             var pictureDTO = _mapper.Map<PictureDTO>(picture);
@@ -44,8 +56,13 @@ namespace InnoGotchi.Web.Controllers
             else
                 return BadRequest();
         }
-
+        /// <summary>
+        /// Deletes picture by id
+        /// </summary>
+        /// <param name="id">Picture id</param>
         [HttpDelete]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public IActionResult Delete(int id)
         {
             if (_service.Delete(id))

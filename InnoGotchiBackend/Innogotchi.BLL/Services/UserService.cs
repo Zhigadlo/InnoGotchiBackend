@@ -71,7 +71,6 @@ namespace InnoGotchi.BLL.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="newAvatar"></param>
-        /// <returns></returns>
         public bool UpdateAvatar(int id, byte[] newAvatar)
         {
             User? user = _database.Users.FirstOrDefault(u => u.Id == id);
@@ -93,7 +92,6 @@ namespace InnoGotchi.BLL.Services
         /// <param name="oldPassword"></param>
         /// <param name="newPassword"></param>
         /// <param name="confirmPassword"></param>
-        /// <returns></returns>
         public bool UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
         {
             User? user = _database.Users.Get(id);
@@ -112,7 +110,6 @@ namespace InnoGotchi.BLL.Services
         /// </summary>
         /// <param name="email"></param>
         /// <param name="password"></param>
-        /// <returns></returns>
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
             User? user = _database.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
@@ -127,7 +124,6 @@ namespace InnoGotchi.BLL.Services
         /// Returns all coloborators for user by his id 
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
         public IEnumerable<UserDTO>? Coloborators(int userId)
         {
             var requests = _database.Requests.FindAll(r => r.IsConfirmed && (r.RequestOwnerId == userId || r.RequestReceipientId == userId));
@@ -168,7 +164,6 @@ namespace InnoGotchi.BLL.Services
         /// Encryptes the password
         /// </summary>
         /// <param name="password"></param>
-        /// <returns></returns>
         private string PasswordToHash(string password)
         {
             using (var hashAlg = MD5.Create())

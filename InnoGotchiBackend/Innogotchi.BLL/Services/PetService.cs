@@ -54,7 +54,6 @@ namespace InnoGotchi.BLL.Services
         /// <param name="page"></param>
         /// <param name="sortType"></param>
         /// <param name="filterModel"></param>
-        /// <returns></returns>
         public PaginatedList<PetDTO> GetPage(int page, string sortType, PetFilterModel filterModel)
         {
             IQueryable<Pet>? pets = null;

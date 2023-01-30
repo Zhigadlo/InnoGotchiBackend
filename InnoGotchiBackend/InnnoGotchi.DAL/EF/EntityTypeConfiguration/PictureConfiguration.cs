@@ -17,10 +17,9 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             builder.HasData(GetPictures().ToArray());
         }
         /// <summary>
-        /// Get byte array of image by path
+        /// Gets byte array of image by path
         /// </summary>
         /// <param name="path">Path to file</param>
-        /// <returns></returns>
         private byte[] GetBytesFromImage(string path)
         {
             using (FileStream fsstream = File.OpenRead(path))
@@ -31,9 +30,8 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
             }
         }
         /// <summary>
-        /// Get starting body parts pictures
+        /// Gets starting body parts pictures
         /// </summary>
-        /// <returns></returns>
         private List<Picture> GetPictures()
         {
             List<Picture> pictures = new List<Picture>();
