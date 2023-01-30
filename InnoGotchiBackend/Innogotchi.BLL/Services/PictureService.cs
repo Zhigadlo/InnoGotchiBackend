@@ -7,6 +7,9 @@ using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
+    /// <summary>
+    /// Represents service that get access to picture entities
+    /// </summary>
     public class PictureService : IService<PictureDTO>
     {
         private InnoGotchiUnitOfWork _database;

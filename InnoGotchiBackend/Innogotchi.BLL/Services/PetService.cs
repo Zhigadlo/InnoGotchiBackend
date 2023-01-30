@@ -8,6 +8,9 @@ using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
+    /// <summary>
+    /// Represents service that get access to pet entities
+    /// </summary>
     public class PetService : IService<PetDTO>
     {
         private InnoGotchiUnitOfWork _database;
@@ -45,7 +48,13 @@ namespace InnoGotchi.BLL.Services
         {
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
         }
-
+        /// <summary>
+        /// Gets PaginatedList object that have information about page with sorting and filtration
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="sortType"></param>
+        /// <param name="filterModel"></param>
+        /// <returns></returns>
         public PaginatedList<PetDTO> GetPage(int page, string sortType, PetFilterModel filterModel)
         {
             IQueryable<Pet>? pets = null;
@@ -180,7 +189,10 @@ namespace InnoGotchi.BLL.Services
 
             return false;
         }
-
+        /// <summary>
+        /// Feeds pet by id
+        /// </summary>
+        /// <param name="id"></param>
         public void Feed(int id)
         {
             PetDTO? pet = Get(id);
@@ -190,6 +202,11 @@ namespace InnoGotchi.BLL.Services
                 Update(pet);
             }
         }
+
+        /// <summary>
+        /// Gives a drink to pet by id
+        /// </summary>
+        /// <param name="id"></param>
         public void Drink(int id)
         {
             PetDTO? pet = Get(id);

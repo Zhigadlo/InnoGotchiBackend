@@ -7,6 +7,9 @@ using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
+    /// <summary>
+    /// Represents service that get access to coloboration requests entities
+    /// </summary>
     public class RequestService : IService<ColoborationRequestDTO>
     {
         private InnoGotchiUnitOfWork _database;

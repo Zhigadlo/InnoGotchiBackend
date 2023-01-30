@@ -1,5 +1,9 @@
 ﻿namespace InnoGotchi.BLL.Models
 {
+    /// <summary>
+    /// Represents entity that contains all page items and other info about pages
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PaginatedList<T> where T : class
     {
         public int PageIndex { get; private set; }

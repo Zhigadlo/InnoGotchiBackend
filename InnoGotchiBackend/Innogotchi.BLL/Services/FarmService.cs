@@ -7,6 +7,9 @@ using InnoGotchi.BLL.Validation;
 
 namespace InnoGotchi.BLL.Services
 {
+    /// <summary>
+    /// Represents service that get access to farm entities
+    /// </summary>
     public class FarmService : IService<FarmDTO>
     {
         private InnoGotchiUnitOfWork _database;

@@ -1,5 +1,8 @@
 ﻿namespace InnoGotchi.BLL.Models
 {
+    /// <summary>
+    /// Model for pet filtration that helps to get page from server
+    /// </summary>
     public class PetFilterModel
     {
         public long Age { get; set; } = 0;

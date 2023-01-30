@@ -9,6 +9,9 @@ using System.Text;
 
 namespace InnoGotchi.BLL.Services
 {
+    /// <summary>
+    /// Represents service that get access to user entities
+    /// </summary>
     public class UserService : IService<UserDTO>
     {
         private InnoGotchiUnitOfWork _database;
@@ -63,6 +66,12 @@ namespace InnoGotchi.BLL.Services
 
             return false;
         }
+        /// <summary>
+        /// Updates user avatar by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="newAvatar"></param>
+        /// <returns></returns>
         public bool UpdateAvatar(int id, byte[] newAvatar)
         {
             User? user = _database.Users.FirstOrDefault(u => u.Id == id);
@@ -77,6 +86,14 @@ namespace InnoGotchi.BLL.Services
             else
                 return false;
         }
+        /// <summary>
+        /// Updates user password
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="confirmPassword"></param>
+        /// <returns></returns>
         public bool UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
         {
             User? user = _database.Users.Get(id);
@@ -90,6 +107,12 @@ namespace InnoGotchi.BLL.Services
 
             return false;
         }
+        /// <summary>
+        /// Finds and returns user by email and password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
             User? user = _database.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
@@ -100,7 +123,11 @@ namespace InnoGotchi.BLL.Services
             else
                 return null;
         }
-
+        /// <summary>
+        /// Returns all coloborators for user by his id 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IEnumerable<UserDTO>? Coloborators(int userId)
         {
             var requests = _database.Requests.FindAll(r => r.IsConfirmed && (r.RequestOwnerId == userId || r.RequestReceipientId == userId));
@@ -137,6 +164,11 @@ namespace InnoGotchi.BLL.Services
             }
             return false;
         }
+        /// <summary>
+        /// Encryptes the password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         private string PasswordToHash(string password)
         {
             using (var hashAlg = MD5.Create())
