@@ -5,13 +5,23 @@ namespace InnoGotchi.Web.Options
 {
     public class AuthOptions
     {
-        public const string ISSUER = "AuthIssuer";
-        public const string AUDIENCE = "AuthClient";
-        const string KEY = "mymegasecret_secretkeyAAAAAAAAAA";
-        public const int LIFETIME = 1;
-        public static SymmetricSecurityKey GetSymmetricSecurityKey()
+        public string Issuer { get; private set; }
+        public string Audience { get; private set; }
+        public int Lifetime { get; private set; }
+
+        private string _key;
+
+        public AuthOptions(IConfiguration configuration)
         {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
+            _key = configuration.GetSection("TokenKey").Value;
+            Issuer = configuration.GetSection("TokenIssuer").Value;
+            Audience = configuration.GetSection("TokenAudience").Value;
+            Lifetime = int.Parse(configuration.GetSection("TokenExpireTimeHours").Value);
+        }
+
+        public SymmetricSecurityKey GetSymmetricSecurityKey()
+        {
+            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_key));
         }
     }
 }
