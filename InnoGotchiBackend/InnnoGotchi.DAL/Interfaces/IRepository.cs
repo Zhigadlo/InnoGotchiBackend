@@ -2,13 +2,13 @@
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
+        IQueryable<T> GetAll();
         T? Get(int id);
-        IEnumerable<T> Find(Func<T, bool> predicate);
-        T? First(Func<T, bool> predicate);
+        IQueryable<T> FindAll(Func<T, bool> predicate);
+        T? FirstOrDefault(Func<T, bool> predicate);
         void Create(T item);
         void Update(T item);
-        void Delete(int id);
+        bool Delete(int id);
         bool Contains(Func<T, bool> predicate);
     }
 }
