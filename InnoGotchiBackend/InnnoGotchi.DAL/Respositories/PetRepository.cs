@@ -14,7 +14,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<Pet, bool> predicate)
         {
-            Pet? pet = _context.Pets.FirstOrDefault(predicate);
+            Pet? pet = FirstOrDefault(predicate);
             if (pet == null)
                 return false;
             else
@@ -26,31 +26,33 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Pets.Add(item);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            Pet? pet = _context.Pets.FirstOrDefault(p => p.Id == id);
+            Pet? pet = Get(id);
             if (pet != null)
             {
                 _context.Pets.Remove(pet);
+                return true;
             }
+            return false;
         }
 
-        public IEnumerable<Pet> Find(Func<Pet, bool> predicate)
+        public IQueryable<Pet> FindAll(Func<Pet, bool> predicate)
         {
-            return _context.Pets.Where(predicate);
+            return GetAll().Where(predicate).AsQueryable();
         }
 
-        public Pet? First(Func<Pet, bool> predicate)
+        public Pet? FirstOrDefault(Func<Pet, bool> predicate)
         {
-            return _context.Pets.FirstOrDefault(predicate);
+            return GetAll().FirstOrDefault(predicate);
         }
 
         public Pet? Get(int id)
         {
-            return _context.Pets.FirstOrDefault(p => p.Id == id);
+            return FirstOrDefault(p => p.Id == id);
         }
 
-        public IEnumerable<Pet> GetAll()
+        public IQueryable<Pet> GetAll()
         {
             return _context.Pets;
         }

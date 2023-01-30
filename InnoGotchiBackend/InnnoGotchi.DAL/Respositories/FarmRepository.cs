@@ -15,7 +15,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<Farm, bool> predicate)
         {
-            Farm? farm = _context.Farms.FirstOrDefault(predicate);
+            Farm? farm = FirstOrDefault(predicate);
             if (farm == null)
                 return false;
             else
@@ -27,33 +27,38 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Farms.Add(item);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            Farm? farm = _context.Farms.FirstOrDefault();
+            Farm? farm = Get(id);
             if (farm != null)
             {
                 _context.Farms.Remove(farm);
+                return true;
             }
+            else
+                return false;
         }
 
-        public IEnumerable<Farm> Find(Func<Farm, bool> predicate)
+        public IQueryable<Farm> FindAll(Func<Farm, bool> predicate)
         {
-            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).Where(predicate);
+            return GetAll().Where(predicate)
+                           .AsQueryable();
         }
 
-        public Farm? First(Func<Farm, bool> predicate)
+        public Farm? FirstOrDefault(Func<Farm, bool> predicate)
         {
-            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).FirstOrDefault(predicate);
+            return GetAll().FirstOrDefault(predicate);
         }
 
         public Farm? Get(int id)
         {
-            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets).FirstOrDefault(f => f.Id == id);
+            return FirstOrDefault(f => f.Id == id);
         }
 
-        public IEnumerable<Farm> GetAll()
+        public IQueryable<Farm> GetAll()
         {
-            return _context.Farms.Include(f => f.Owner).Include(f => f.Pets);
+            return _context.Farms.Include(f => f.Owner)
+                                 .Include(f => f.Pets);
         }
 
         public void Update(Farm item)

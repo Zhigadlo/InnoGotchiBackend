@@ -14,7 +14,7 @@ namespace InnnoGotchi.DAL.Respositories
         }
         public bool Contains(Func<Picture, bool> predicate)
         {
-            Picture? picture = _context.Pictures.FirstOrDefault(predicate);
+            Picture? picture = FirstOrDefault(predicate);
             if (picture == null)
                 return false;
 
@@ -26,31 +26,36 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Pictures.Add(item);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            Picture? picture = _context.Pictures.FirstOrDefault(p => p.Id == id);
+            Picture? picture = Get(id);
             if (picture != null)
+            {
                 _context.Pictures.Remove(picture);
+                return true;
+            }
+            else
+                return false;
         }
 
-        public IEnumerable<Picture> Find(Func<Picture, bool> predicate)
+        public IQueryable<Picture> FindAll(Func<Picture, bool> predicate)
         {
-            return _context.Pictures.Where(predicate).AsEnumerable();
+            return GetAll().Where(predicate).AsQueryable();
         }
 
-        public Picture? First(Func<Picture, bool> predicate)
+        public Picture? FirstOrDefault(Func<Picture, bool> predicate)
         {
             return _context.Pictures.FirstOrDefault(predicate);
         }
 
         public Picture? Get(int id)
         {
-            return First(p => p.Id == id);
+            return FirstOrDefault(p => p.Id == id);
         }
 
-        public IEnumerable<Picture> GetAll()
+        public IQueryable<Picture> GetAll()
         {
-            return _context.Pictures.AsEnumerable();
+            return _context.Pictures;
         }
 
         public void Update(Picture item)

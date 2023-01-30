@@ -15,9 +15,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<User, bool> predicate)
         {
-            User? user = _context.Users.Include(u => u.SentRequests)
-                                       .Include(u => u.ReceivedRequests)
-                                       .FirstOrDefault(predicate);
+            User? user = FirstOrDefault(predicate);
             if (user == null)
                 return false;
             else
@@ -29,45 +27,38 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Users.Add(item);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            User? user = _context.Users.FirstOrDefault(u => u.Id == id);
+            User? user = Get(id);
             if (user != null)
             {
                 _context.Users.Remove(user);
+                return true;
             }
+            return false;
         }
 
-        public IEnumerable<User> Find(Func<User, bool> predicate)
+        public IQueryable<User> FindAll(Func<User, bool> predicate)
         {
-            return _context.Users.Where(predicate);
+            return GetAll().Where(predicate).AsQueryable();
         }
 
-        public User? First(Func<User, bool> predicate)
+        public User? FirstOrDefault(Func<User, bool> predicate)
         {
-            return _context.Users.Include(u => u.CollaboratedFarms)
-                                 .Include(u => u.SentRequests)
-                                 .Include(u => u.ReceivedRequests)
-                                 .Include(u => u.Farm)
-                                 .FirstOrDefault(predicate);
+            return GetAll().FirstOrDefault(predicate);
         }
 
         public User? Get(int id)
         {
-            return _context.Users.Include(u => u.CollaboratedFarms)
-                                 .Include(u => u.SentRequests)
-                                 .Include(u => u.ReceivedRequests)
-                                 .Include(u => u.Farm)
-                                 .FirstOrDefault(u => u.Id == id);
+            return FirstOrDefault(u => u.Id == id);
         }
 
-        public IEnumerable<User> GetAll()
+        public IQueryable<User> GetAll()
         {
             return _context.Users.Include(u => u.CollaboratedFarms)
                                  .Include(u => u.SentRequests)
                                  .Include(u => u.ReceivedRequests)
-                                 .Include(u => u.Farm)
-                                 .AsEnumerable();
+                                 .Include(u => u.Farm);
         }
 
         public void Update(User item)

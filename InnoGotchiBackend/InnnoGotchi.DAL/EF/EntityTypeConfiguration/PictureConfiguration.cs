@@ -31,7 +31,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
         {
             List<Picture> pictures = new List<Picture>();
 
-            string rootPath = Directory.GetParent(Environment.CurrentDirectory).FullName + "\\InnnoGotchi.DAL\\EF\\EntityTypeConfiguration";
+            string rootPath = Directory.GetParent(Environment.CurrentDirectory)?.FullName + "\\InnnoGotchi.DAL\\EF\\EntityTypeConfiguration";
             int id = 1;
             for (int i = 1; i < 6; i++)
             {

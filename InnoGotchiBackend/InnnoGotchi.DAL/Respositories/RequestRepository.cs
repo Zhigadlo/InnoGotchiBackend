@@ -15,7 +15,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<ColoborationRequest, bool> predicate)
         {
-            ColoborationRequest? request = _context.Requests.FirstOrDefault(predicate);
+            ColoborationRequest? request = FirstOrDefault(predicate);
             if (request == null)
                 return false;
 
@@ -27,34 +27,31 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Requests.Add(item);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            ColoborationRequest? request = _context.Requests.FirstOrDefault(r => r.Id == id);
+            ColoborationRequest? request = Get(id);
             if (request != null)
             {
                 _context.Requests.Remove(request);
+                return true;
             }
+
+            return false;
         }
 
-        public IEnumerable<ColoborationRequest> Find(Func<ColoborationRequest, bool> predicate)
+        public IQueryable<ColoborationRequest> FindAll(Func<ColoborationRequest, bool> predicate)
         {
-            return _context.Requests.Include(r => r.RequestOwner)
-                                    .Include(r => r.RequestReceipient)
-                                    .Where(predicate).AsEnumerable();
+            return GetAll().Where(predicate).AsQueryable();
         }
 
-        public ColoborationRequest? First(Func<ColoborationRequest, bool> predicate)
+        public ColoborationRequest? FirstOrDefault(Func<ColoborationRequest, bool> predicate)
         {
-            return _context.Requests.Include(r => r.RequestOwner)
-                                    .Include(r => r.RequestReceipient)
-                                    .FirstOrDefault(predicate);
+            return GetAll().FirstOrDefault(predicate);
         }
 
         public ColoborationRequest? Get(int id)
         {
-            ColoborationRequest? request = _context.Requests.Include(r => r.RequestOwner)
-                                                            .Include(r => r.RequestReceipient)
-                                                            .FirstOrDefault(r => r.Id == id);
+            ColoborationRequest? request = FirstOrDefault(r => r.Id == id);
 
             if (request != null)
             {
@@ -65,11 +62,10 @@ namespace InnnoGotchi.DAL.Respositories
                 return null;
         }
 
-        public IEnumerable<ColoborationRequest> GetAll()
+        public IQueryable<ColoborationRequest> GetAll()
         {
             return _context.Requests.Include(r => r.RequestOwner)
-                                    .Include(r => r.RequestReceipient)
-                                    .AsEnumerable();
+                                    .Include(r => r.RequestReceipient);
         }
 
         public void Update(ColoborationRequest item)
