@@ -4,6 +4,9 @@ using InnnoGotchi.DAL.Interfaces;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents repository that has full access to picture entities in database
+    /// </summary>
     public class PictureRepository : IRepository<Picture>
     {
         private InnoGotchiContext _context;

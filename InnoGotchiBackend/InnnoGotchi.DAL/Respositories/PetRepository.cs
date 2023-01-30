@@ -4,6 +4,9 @@ using InnnoGotchi.DAL.Interfaces;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents repository that has full access to pet entities in database
+    /// </summary>
     public class PetRepository : IRepository<Pet>
     {
         private InnoGotchiContext _context;

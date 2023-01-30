@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents entity that contains all repositories that have access to database entities. Implements patter unit of work.
+    /// </summary>
     public class InnoGotchiUnitOfWork
     {
         private InnoGotchiContext _innoGotchiContext;
@@ -23,31 +26,44 @@ namespace InnnoGotchi.DAL.Respositories
             _requestRepository = new RequestRepository(_innoGotchiContext);
             _pictureRepository = new PictureRepository(_innoGotchiContext);
         }
+        /// <summary>
+        /// Returns pet repository
+        /// </summary>
         public IRepository<Pet> Pets
         {
             get => _petRepository;
         }
-
+        /// <summary>
+        /// Returns user repository
+        /// </summary>
         public IRepository<User> Users
         {
             get => _userRepository;
         }
-
+        /// <summary>
+        /// Returns pictures repository
+        /// </summary>
         public IRepository<Picture> Pictures
         {
             get => _pictureRepository;
         }
-
+        /// <summary>
+        /// Returns coloboration requests repository
+        /// </summary>
         public IRepository<ColoborationRequest> Requests
         {
             get => _requestRepository;
         }
-
+        /// <summary>
+        /// Returns farm repository
+        /// </summary>
         public IRepository<Farm> Farms
         {
             get => _farmRepository;
         }
-
+        /// <summary>
+        /// Saves changes in database
+        /// </summary>
         public void SaveChanges()
         {
             _innoGotchiContext.SaveChanges();

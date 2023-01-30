@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents repository that has full access to coloboration request entities in database
+    /// </summary>
     public class RequestRepository : IRepository<ColoborationRequest>
     {
         private InnoGotchiContext _context;

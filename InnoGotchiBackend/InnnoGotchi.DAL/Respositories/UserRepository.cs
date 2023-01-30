@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents repository that has full access to user entities in database
+    /// </summary>
     public class UserRepository : IRepository<User>
     {
         private InnoGotchiContext _context;

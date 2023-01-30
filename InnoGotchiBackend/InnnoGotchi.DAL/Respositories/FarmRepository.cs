@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
+    /// <summary>
+    /// Represents repository that has full access to farm entities in database
+    /// </summary>
     public class FarmRepository : IRepository<Farm>
     {
         private InnoGotchiContext _context;
