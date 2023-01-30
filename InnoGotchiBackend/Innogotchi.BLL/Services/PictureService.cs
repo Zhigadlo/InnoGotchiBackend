@@ -35,10 +35,13 @@ namespace InnoGotchi.BLL.Services
 
         public bool Delete(int id)
         {
-            Picture? picture = _database.Pictures.First(p => p.Id == id);
+            Picture? picture = _database.Pictures.FirstOrDefault(p => p.Id == id);
             if (picture != null)
             {
-                _database.Pictures.Delete(id);
+                var isDeleted = _database.Pictures.Delete(id);
+                if (!isDeleted)
+                    return false;
+
                 _database.SaveChanges();
                 return true;
             }

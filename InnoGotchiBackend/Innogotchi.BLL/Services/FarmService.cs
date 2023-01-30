@@ -37,7 +37,10 @@ namespace InnoGotchi.BLL.Services
         {
             if (_database.Farms.Contains(f => f.Id == id))
             {
-                _database.Farms.Delete(id);
+                var isDeleted = _database.Farms.Delete(id);
+                if (!isDeleted)
+                    return false;
+
                 _database.SaveChanges();
                 return true;
             }
@@ -46,11 +49,7 @@ namespace InnoGotchi.BLL.Services
 
         public FarmDTO? Get(int id)
         {
-            Farm? farm = _database.Farms.Get(id);
-            if (farm == null)
-                return null;
-            else
-                return _mapper.Map<FarmDTO>(farm);
+            return _mapper.Map<FarmDTO>(_database.Farms.Get(id));
         }
 
         public IEnumerable<FarmDTO> GetAll()

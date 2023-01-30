@@ -37,7 +37,10 @@ namespace InnoGotchi.BLL.Services
         {
             if (_database.Requests.Contains(r => r.Id == id))
             {
-                _database.Requests.Delete(id);
+                var isDeleted = _database.Requests.Delete(id);
+                if (!isDeleted)
+                    return false;
+
                 _database.SaveChanges();
                 return true;
             }

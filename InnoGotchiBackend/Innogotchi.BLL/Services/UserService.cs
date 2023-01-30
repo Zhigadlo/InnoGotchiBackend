@@ -65,7 +65,7 @@ namespace InnoGotchi.BLL.Services
         }
         public bool UpdateAvatar(int id, byte[] newAvatar)
         {
-            User? user = _database.Users.First(u => u.Id == id);
+            User? user = _database.Users.FirstOrDefault(u => u.Id == id);
             user.Avatar = newAvatar;
             var result = _validator.Validate(user);
             if (result.IsValid)
@@ -92,17 +92,46 @@ namespace InnoGotchi.BLL.Services
         }
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
-            User? user = _database.Users.First(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
+            User? user = _database.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
             if (user != null)
+            {
                 return _mapper.Map<UserDTO>(user);
+            }
             else
                 return null;
         }
+
+        public IEnumerable<UserDTO>? Coloborators(int userId)
+        {
+            var requests = _database.Requests.FindAll(r => r.IsConfirmed && (r.RequestOwnerId == userId || r.RequestReceipientId == userId));
+
+            var coloborators = new List<UserDTO>();
+            foreach (var r in requests)
+            {
+                if (r.RequestOwnerId == userId)
+                {
+                    var user = _database.Users.Get(r.RequestReceipientId);
+                    coloborators.Add(_mapper.Map<UserDTO>(user));
+                }
+
+
+                if (r.RequestReceipientId == userId)
+                {
+                    var user = _database.Users.Get(r.RequestOwnerId);
+                    coloborators.Add(_mapper.Map<UserDTO>(user));
+                }
+            }
+            return coloborators.AsEnumerable();
+        }
+
         public bool Delete(int id)
         {
             if (_database.Pets.Contains(p => p.Id == id))
             {
-                _database.Users.Delete(id);
+                var isDeleted = _database.Users.Delete(id);
+                if (!isDeleted)
+                    return false;
+
                 _database.SaveChanges();
                 return true;
             }
