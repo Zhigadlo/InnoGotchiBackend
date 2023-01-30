@@ -25,6 +25,13 @@ namespace InnoGotchi.Web.Controllers
         {
             return Ok(_service.GetAll());
         }
+
+        [HttpGet("getAllNames")]
+        public IActionResult GetAllNames()
+        {
+            return Ok(_service.GetAll().Select(f => f.Name));
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -34,7 +41,7 @@ namespace InnoGotchi.Web.Controllers
         public IActionResult Create(FarmModel farm)
         {
             var farmDTO = _mapper.Map<FarmDTO>(farm);
-            farmDTO.CreateTime = DateTime.Now;
+            farmDTO.CreateTime = DateTime.UtcNow;
             int result = _service.Create(farmDTO);
             if (result != -1)
                 return Ok(result);

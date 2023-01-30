@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnnoGotchi.DAL", "InnnoGot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnoGotchi.BLL", "Innogotchi.BLL\InnoGotchi.BLL.csproj", "{2D37C2ED-681C-4332-8374-24D169E39BED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoGotchiBackendTests", "InnoGotchiBackendTests\InnoGotchiBackendTests.csproj", "{3C457200-8034-4FA7-BE15-FFE6125A464A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnoGotchiBackendTests", "InnoGotchiBackendTests\InnoGotchiBackendTests.csproj", "{3C457200-8034-4FA7-BE15-FFE6125A464A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

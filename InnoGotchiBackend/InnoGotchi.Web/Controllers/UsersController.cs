@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InnoGotchi.BLL.DTO;
+using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
@@ -18,11 +19,14 @@ namespace InnoGotchi.Web.Controllers
     {
         private UserService _service;
         private IMapper _mapper;
-        public UsersController(UserService service)
+        private IConfiguration _configuration;
+        public UsersController(UserService service,
+                               IConfiguration configuration)
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
             _mapper = config.CreateMapper();
             _service = service;
+            _configuration = configuration;
         }
         [AllowAnonymous]
         [HttpGet]
@@ -30,11 +34,23 @@ namespace InnoGotchi.Web.Controllers
         {
             return Ok(_service.GetAll());
         }
+        [AllowAnonymous]
+        [HttpGet("getAllEmails")]
+        public IActionResult GetAllEmails()
+        {
+            return Ok(_service.GetAll().Select(u => u.Email));
+        }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             return Ok(_service.Get(id));
         }
+        [HttpGet("coloborators/{id}")]
+        public IActionResult Coloborators(int id)
+        {
+            return Ok(_service.Coloborators(id));
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Create([FromForm] UserModel user)
@@ -87,29 +103,43 @@ namespace InnoGotchi.Web.Controllers
         [HttpGet("authUser")]
         public IActionResult GetAuthorizedUser()
         {
-            return Json(_service.Get(int.Parse(User.FindFirstValue("user_id"))));
+            var userId = User.FindFirstValue(nameof(SecurityTokenModel.UserId));
+            if (userId.IsNullOrEmpty())
+                return NotFound();
+            return Json(_service.Get(int.Parse(userId)));
         }
 
         [AllowAnonymous]
         [HttpPost("token")]
         public IActionResult Token(string email, string password)
         {
-            var identity = GetIdentity(email, password);
-            if (identity == null)
+            var identityTokenModel = GetIdentityTokenModel(email, password);
+            if (identityTokenModel == null)
             {
                 return BadRequest(new { errorText = "Invalid email or password." });
             }
-
+            var authOptions = new AuthOptions(_configuration);
             var now = DateTime.UtcNow;
+            var expiredAt = now.AddHours(authOptions.Lifetime);
             var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
+                    issuer: authOptions.Issuer,
+                    audience: authOptions.Audience,
                     notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.AddHours(AuthOptions.LIFETIME),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    claims: identityTokenModel.Identity.Claims,
+                    expires: expiredAt,
+                    signingCredentials: new SigningCredentials(authOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
-            return Json(new JwtSecurityTokenHandler().WriteToken(jwt));
+            var token = new SecurityTokenModel
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
+                UserId = identityTokenModel.Token.UserId,
+                FarmId = identityTokenModel.Token.FarmId,
+                UserName = identityTokenModel.Token.UserName,
+                ExpireAt = expiredAt,
+                Email = identityTokenModel.Token.Email
+            };
+
+            return Json(token);
         }
 
         [AllowAnonymous]
@@ -119,20 +149,30 @@ namespace InnoGotchi.Web.Controllers
             return _service.FindUserByEmailAndPassword(email, password);
         }
 
-        private ClaimsIdentity GetIdentity(string email, string password)
+        private IdentityTokenModel GetIdentityTokenModel(string email, string password)
         {
             UserDTO? person = _service.FindUserByEmailAndPassword(email, password);
             if (person != null)
             {
+                var tokenModel = new SecurityTokenModel()
+                {
+                    Email = person.Email,
+                    UserId = person.Id,
+                    FarmId = person.Farm == null ? -1 : person.Farm.Id,
+                    UserName = person.FirstName + " " + person.LastName
+                };
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
-                    new Claim("user_id", person.Id.ToString())
+                    new Claim(nameof(SecurityTokenModel.Email), tokenModel.Email),
+                    new Claim(nameof(SecurityTokenModel.UserId), tokenModel.UserId.ToString()),
+                    new Claim(nameof(SecurityTokenModel.FarmId), tokenModel.FarmId.ToString()),
+                    new Claim(nameof(SecurityTokenModel.UserName), tokenModel.UserName.ToString()),
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
+                return new IdentityTokenModel() { Token = tokenModel, Identity = claimsIdentity };
             }
 
             return null;

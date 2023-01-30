@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InnoGotchi.BLL.DTO;
+using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
@@ -22,17 +23,22 @@ namespace InnoGotchi.Web.Controllers
             _service = service;
         }
 
-        [HttpGet("{page}&{sortType}&{age}&{year}&{hungerLavel}&{feedingPeriod}&{isLastFeedingStage}&{thirstyLavel}&{drinkingPeriod}&{isLastDrinkingStage}")]
-        public IActionResult GetPage(int page, string sortType, long age = 0, long year = 0, int hungerLavel = -1, long feedingPeriod = 0,
-            bool isLastFeedingStage = false, int thirstyLavel = -1, long drinkingPeriod = 0, bool isLastDrinkingStage = false)
+        [HttpGet("getPage")]
+        public IActionResult GetPage(int page, string sortType, PetFilterModel filterModel)
         {
-            return Ok(_service.GetPage(page, sortType, age, year, hungerLavel, feedingPeriod, isLastFeedingStage, thirstyLavel, drinkingPeriod, isLastDrinkingStage));
+            return Ok(_service.GetPage(page, sortType, filterModel));
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());
+        }
+
+        [HttpGet("getAllNames")]
+        public IActionResult GetAllNames()
+        {
+            return Ok(_service.GetAll().Select(p => p.Name));
         }
 
         [HttpGet("{id}")]
@@ -79,9 +85,10 @@ namespace InnoGotchi.Web.Controllers
             PetDTO? petDTO = _service.Get(id);
             if (petDTO != null)
             {
-                if (petDTO.DeadTime != DateTime.MinValue)
+                if (petDTO.DeathTime != DateTime.MinValue)
                     return Ok();
-                petDTO.DeadTime = DateTime.MinValue.AddTicks(deathTime);
+                petDTO.DeathTime = DateTime.MinValue.AddTicks(deathTime);
+                petDTO.FirstHappinessDate = DateTime.MinValue;
                 if (_service.Update(petDTO))
                     return Ok();
                 else

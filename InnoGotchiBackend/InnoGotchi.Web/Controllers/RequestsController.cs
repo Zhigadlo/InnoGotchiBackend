@@ -47,7 +47,7 @@ namespace InnoGotchi.Web.Controllers
         {
             var requestDTO = _mapper.Map<ColoborationRequestDTO>(request);
             requestDTO.IsConfirmed = false;
-            requestDTO.Date = DateTime.Now;
+            requestDTO.Date = DateTime.UtcNow;
             int result = _service.Create(requestDTO);
             if (result != -1)
                 return Ok(result);
