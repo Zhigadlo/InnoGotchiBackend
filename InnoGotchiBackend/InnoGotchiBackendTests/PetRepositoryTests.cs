@@ -21,7 +21,7 @@ namespace InnoGotchiBackendTests
         public void CreateTest()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
-            var pet = _fixture.Create<Pet>();
+            var pet = CreateValidPet();
 
             uow.Pets.Create(pet);
             uow.SaveChanges();
@@ -31,8 +31,8 @@ namespace InnoGotchiBackendTests
         public void DeleteTest()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
-
-            var pet = _fixture.Create<Pet>();
+            var pets = uow.Pets.GetAll();
+            var pet = CreateValidPet();
             uow.Pets.Create(pet);
             uow.SaveChanges();
             uow.Pets.Delete(pet.Id);
@@ -44,7 +44,7 @@ namespace InnoGotchiBackendTests
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
 
-            var pet = _fixture.Create<Pet>();
+            var pet = CreateValidPet();
             uow.Pets.Create(pet);
             uow.SaveChanges();
             pet.Name = "Test";
@@ -58,13 +58,22 @@ namespace InnoGotchiBackendTests
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
 
-            var pet1 = _fixture.Create<Pet>();
-            var pet2 = _fixture.Create<Pet>();
+            var pet1 = CreateValidPet();
+            var pet2 = CreateValidPet();
             uow.Pets.Create(pet1);
             uow.Pets.Create(pet2);
             uow.SaveChanges();
             var pets = uow.Pets.GetAll();
             pets.Count().Should().BeGreaterThanOrEqualTo(2);
+        }
+
+        private Pet CreateValidPet()
+        {
+            return _fixture.Build<Pet>()
+                           .Without(p => p.Id)
+                           .Without(p => p.Farm)
+                           .Without(p => p.FarmId)
+                           .Create();
         }
     }
 }

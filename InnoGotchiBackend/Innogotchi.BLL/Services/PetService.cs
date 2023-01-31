@@ -27,7 +27,6 @@ namespace InnoGotchi.BLL.Services
         {
             if (_database.Pets.Contains(p => p.Name == item.Name))
                 return -1;
-            Farm? farm = _database.Farms.Get(item.FarmId);
 
             Pet newPet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(newPet);
