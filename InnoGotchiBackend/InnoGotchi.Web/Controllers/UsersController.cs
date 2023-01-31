@@ -69,6 +69,26 @@ namespace InnoGotchi.Web.Controllers
             return Ok(_service.Coloborators(id));
         }
         /// <summary>
+        /// Gets users that sent coloboration requests to user by id
+        /// </summary>
+        /// <param name="id">User id</param>
+        [HttpGet("sentRequestUsers/{id}")]
+        [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
+        public IActionResult GetUsersThatSentRequest(int id)
+        {
+            return Ok(_service.UsersSentRequest(id));
+        }
+        /// <summary>
+        /// Gets users that received coloboration requests from user by id
+        /// </summary>
+        /// <param name="id">User that sent request id</param>
+        [HttpGet("receivedRequestUsers/{id}")]
+        [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
+        public IActionResult GetUsersThatReceivedRequest(int id)
+        {
+            return Ok(_service.UsersReceivedRequest(id));
+        }
+        /// <summary>
         /// Creates user
         /// </summary>
         /// <param name="user">User model</param>
@@ -200,6 +220,7 @@ namespace InnoGotchi.Web.Controllers
 
             return Json(token);
         }
+        
         /// <summary>
         /// Gets user by email and password
         /// </summary>

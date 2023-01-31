@@ -146,6 +146,44 @@ namespace InnoGotchi.BLL.Services
             }
             return coloborators.AsEnumerable();
         }
+        /// <summary>
+        /// Gets all users that sent request to user by id
+        /// </summary>
+        /// <param name="id">User that gets requests id</param>
+        public IEnumerable<UserDTO>? UsersSentRequest(int id)
+        {
+            var usersSentRequests = new List<UserDTO>();
+            var user = Get(id);
+            foreach (var rr in user.ReceivedRequests)
+            {
+                if (rr.IsConfirmed == false)
+                {
+                    var u = Get(rr.RequestOwnerId);
+                    usersSentRequests.Add(u);
+                }
+            };
+
+            return usersSentRequests.AsEnumerable();
+        }
+        /// <summary>
+        /// Gets all users that received requests from user by id
+        /// </summary>
+        /// <param name="id">User that sent request id</param>
+        public IEnumerable<UserDTO>? UsersReceivedRequest(int id)
+        {
+            var usersReceivedRequests = new List<UserDTO>();
+            var user = Get(id);
+            foreach (var sr in user.SentRequests)
+            {
+                if (sr.IsConfirmed == false)
+                {
+                    var u = Get(sr.RequestReceipientId);
+                    usersReceivedRequests.Add(u);
+                }
+            };
+
+            return usersReceivedRequests.AsEnumerable();
+        }
 
         public bool Delete(int id)
         {
