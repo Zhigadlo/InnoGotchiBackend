@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Runtime.CompilerServices;
 
 namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
 {
@@ -29,14 +30,18 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
                 return buffer;
             }
         }
+        private static string GetThisFilePath([CallerFilePath] string path = null)
+        {
+            return path;
+        }
         /// <summary>
         /// Gets starting body parts pictures
         /// </summary>
         private List<Picture> GetPictures()
         {
             List<Picture> pictures = new List<Picture>();
-
-            string rootPath = Directory.GetParent(Environment.CurrentDirectory)?.FullName + "\\InnnoGotchi.DAL\\EF\\EntityTypeConfiguration";
+            string rootPath = Path.GetDirectoryName(GetThisFilePath());
+            
             int id = 1;
             for (int i = 1; i < 6; i++)
             {
