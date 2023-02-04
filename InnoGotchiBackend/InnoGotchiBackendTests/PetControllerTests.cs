@@ -3,6 +3,7 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Mapper;
 using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Controllers;
+using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace InnoGotchiBackendTests
     public class PetControllerTests
     {
         private IFixture _fixture;
-        public PetControllerTests() 
+        public PetControllerTests()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
@@ -21,10 +22,10 @@ namespace InnoGotchiBackendTests
             var contextOptions = new DbContextOptionsBuilder<InnoGotchiContext>()
                     .UseInMemoryDatabase(nameof(PetRepositoryTests))
                     .Options;
-            var config = new MapperConfiguration(cnf => cnf.AddProfile<MapperProfile>());
+            var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile> { new MapperProfile(), new ViewModelProfile() }));
             //var service = new PetService(new InnoGotchiUnitOfWork(contextOptions), new Mapper(config));
             _fixture.Register(() => new PetService(new InnoGotchiUnitOfWork(contextOptions), new Mapper(config)));
-            _fixture.Register(() => new PetsController(_fixture.Create<PetService>()));
+            _fixture.Register(() => new PetsController(_fixture.Create<PetService>(), new Mapper(config)));
         }
         [Fact]
         public void PostTest()

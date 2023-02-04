@@ -2,7 +2,6 @@
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Services;
-using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +15,9 @@ namespace InnoGotchi.Web.Controllers
         private PetService _service;
         private IMapper _mapper;
 
-        public PetsController(PetService service)
+        public PetsController(PetService service, IMapper mapper)
         {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
             _service = service;
         }
         /// <summary>
@@ -30,7 +28,7 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="filterModel">Filter model</param>
 
         [HttpGet("getPage")]
-        [ProducesResponseType(typeof(PaginatedList<PetDTO>) ,200)]
+        [ProducesResponseType(typeof(PaginatedList<PetDTO>), 200)]
         public IActionResult GetPage(int page, string sortType, PetFilterModel filterModel)
         {
             return Ok(_service.GetPage(page, sortType, filterModel));
@@ -117,18 +115,9 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(400)]
         public IActionResult Death(int id, long deathTime)
         {
-            PetDTO? petDTO = _service.Get(id);
-            if (petDTO != null)
-            {
-                if (petDTO.DeathTime != DateTime.MinValue)
-                    return Ok();
-                petDTO.DeathTime = DateTime.MinValue.AddTicks(deathTime);
-                petDTO.FirstHappinessDate = DateTime.MinValue;
-                if (_service.Update(petDTO))
-                    return Ok();
-                else
-                    return BadRequest();
-            }
+            var result = _service.Death(id, deathTime);
+            if (result)
+                return Ok();
             else
                 return BadRequest();
         }

@@ -3,7 +3,7 @@ namespace InnoGotchiBackendTests
     public class PetRepositoryTests
     {
         private IFixture _fixture;
-        
+
         public PetRepositoryTests()
         {
             var contextOptions = new DbContextOptionsBuilder<InnoGotchiContext>()

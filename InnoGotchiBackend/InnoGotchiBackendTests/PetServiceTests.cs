@@ -8,13 +8,13 @@ namespace InnoGotchiBackendTests
     public class PetServiceTests
     {
         private IFixture _fixture;
-        public PetServiceTests() 
+        public PetServiceTests()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                     .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            
+
             var contextOptions = new DbContextOptionsBuilder<InnoGotchiContext>()
                     .UseInMemoryDatabase(nameof(PetRepositoryTests))
                     .Options;

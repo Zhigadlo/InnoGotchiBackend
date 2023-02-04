@@ -1,10 +1,8 @@
-global using Xunit;
-global using Moq;
-global using FluentAssertions;
 global using AutoFixture;
-global using Microsoft.EntityFrameworkCore;
 global using AutoFixture.AutoMoq;
+global using FluentAssertions;
 global using InnnoGotchi.DAL.EF;
 global using InnnoGotchi.DAL.Entities;
-global using InnnoGotchi.DAL.Interfaces;
 global using InnnoGotchi.DAL.Respositories;
+global using Microsoft.EntityFrameworkCore;
+global using Xunit;

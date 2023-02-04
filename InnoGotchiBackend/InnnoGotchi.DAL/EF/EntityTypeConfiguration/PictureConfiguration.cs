@@ -41,7 +41,7 @@ namespace InnnoGotchi.DAL.EF.EntityTypeConfiguration
         {
             List<Picture> pictures = new List<Picture>();
             string rootPath = Path.GetDirectoryName(GetThisFilePath());
-            
+
             int id = 1;
             for (int i = 1; i < 6; i++)
             {

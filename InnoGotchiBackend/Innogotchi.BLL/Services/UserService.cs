@@ -3,7 +3,13 @@ using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
+using InnoGotchi.BLL.Models;
+using InnoGotchi.BLL.Options;
 using InnoGotchi.BLL.Validation;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -214,6 +220,48 @@ namespace InnoGotchi.BLL.Services
                 }
                 return builder.ToString();
             }
+        }
+
+        public SecurityTokenModel? Token(string email, string password, IConfiguration configuration)
+        {
+            UserDTO? person = FindUserByEmailAndPassword(email, password);
+
+            if (person == null)
+                return null;
+
+            var farmId = person.Farm == null ? -1 : person.Farm.Id;
+            var userName = person.FirstName + " " + person.LastName;
+
+            var claims = new List<Claim>
+                {
+                    new Claim(nameof(SecurityTokenModel.Email), person.Email),
+                    new Claim(nameof(SecurityTokenModel.UserId), person.Id.ToString()),
+                    new Claim(nameof(SecurityTokenModel.FarmId), farmId.ToString()),
+                    new Claim(nameof(SecurityTokenModel.UserName), userName.ToString()),
+                };
+
+            var authOptions = new AuthOptions(configuration);
+            var now = DateTime.UtcNow;
+            var expiredAt = now.AddHours(authOptions.Lifetime);
+            var jwt = new JwtSecurityToken(
+                    issuer: authOptions.Issuer,
+                    audience: authOptions.Audience,
+                    notBefore: now,
+                    claims: claims,
+                    expires: expiredAt,
+                    signingCredentials: new SigningCredentials(authOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            var token = new SecurityTokenModel
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
+                UserId = person.Id,
+                FarmId = farmId,
+                UserName = userName,
+                ExpireAt = expiredAt,
+                Email = person.Email
+            };
+
+            return token;
         }
     }
 }

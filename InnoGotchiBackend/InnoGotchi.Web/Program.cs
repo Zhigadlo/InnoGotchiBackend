@@ -2,8 +2,9 @@ using AutoMapper;
 using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.Mapper;
+using InnoGotchi.BLL.Options;
 using InnoGotchi.BLL.Services;
-using InnoGotchi.Web.Options;
+using InnoGotchi.Web.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     };
                 });
 
-var config = new MapperConfiguration(cnf => cnf.AddProfile<MapperProfile>());
+var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile> { new MapperProfile(), new ViewModelProfile() }));
 builder.Services.AddTransient<IMapper>(x => new Mapper(config));
 builder.Services.AddTransient<InnoGotchiUnitOfWork>();
 builder.Services.AddTransient<FarmService>();

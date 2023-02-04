@@ -24,7 +24,7 @@ namespace InnoGotchi.Web.Controllers
         /// Gets all farms
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<FarmDTO>),200)]
+        [ProducesResponseType(typeof(IEnumerable<FarmDTO>), 200)]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());

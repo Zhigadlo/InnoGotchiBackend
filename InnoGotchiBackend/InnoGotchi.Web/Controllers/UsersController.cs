@@ -2,13 +2,10 @@
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Services;
-using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
-using InnoGotchi.Web.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace InnoGotchi.Web.Controllers
@@ -21,10 +18,10 @@ namespace InnoGotchi.Web.Controllers
         private IMapper _mapper;
         private IConfiguration _configuration;
         public UsersController(UserService service,
-                               IConfiguration configuration)
+                               IConfiguration configuration,
+                               IMapper mapper)
         {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
             _service = service;
             _configuration = configuration;
         }
@@ -192,35 +189,13 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult Token(string email, string password)
         {
-            var identityTokenModel = GetIdentityTokenModel(email, password);
-            if (identityTokenModel == null)
-            {
+            var token = _service.Token(email, password, _configuration);
+            if (token == null)
                 return BadRequest(new { errorText = "Invalid email or password." });
-            }
-            var authOptions = new AuthOptions(_configuration);
-            var now = DateTime.UtcNow;
-            var expiredAt = now.AddHours(authOptions.Lifetime);
-            var jwt = new JwtSecurityToken(
-                    issuer: authOptions.Issuer,
-                    audience: authOptions.Audience,
-                    notBefore: now,
-                    claims: identityTokenModel.Identity.Claims,
-                    expires: expiredAt,
-                    signingCredentials: new SigningCredentials(authOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-
-            var token = new SecurityTokenModel
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
-                UserId = identityTokenModel.Token.UserId,
-                FarmId = identityTokenModel.Token.FarmId,
-                UserName = identityTokenModel.Token.UserName,
-                ExpireAt = expiredAt,
-                Email = identityTokenModel.Token.Email
-            };
-
-            return Json(token);
+            else
+                return Json(token);
         }
-        
+
         /// <summary>
         /// Gets user by email and password
         /// </summary>
@@ -231,39 +206,6 @@ namespace InnoGotchi.Web.Controllers
         public UserDTO? GetUser(string email, string password)
         {
             return _service.FindUserByEmailAndPassword(email, password);
-        }
-        /// <summary>
-        /// Gets IdentityTokenModel
-        /// </summary>
-        /// <param name="email">User email</param>
-        /// <param name="password">User password</param>
-        private IdentityTokenModel GetIdentityTokenModel(string email, string password)
-        {
-            UserDTO? person = _service.FindUserByEmailAndPassword(email, password);
-            if (person != null)
-            {
-                var tokenModel = new SecurityTokenModel()
-                {
-                    Email = person.Email,
-                    UserId = person.Id,
-                    FarmId = person.Farm == null ? -1 : person.Farm.Id,
-                    UserName = person.FirstName + " " + person.LastName
-                };
-
-                var claims = new List<Claim>
-                {
-                    new Claim(nameof(SecurityTokenModel.Email), tokenModel.Email),
-                    new Claim(nameof(SecurityTokenModel.UserId), tokenModel.UserId.ToString()),
-                    new Claim(nameof(SecurityTokenModel.FarmId), tokenModel.FarmId.ToString()),
-                    new Claim(nameof(SecurityTokenModel.UserName), tokenModel.UserName.ToString()),
-                };
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-                return new IdentityTokenModel() { Token = tokenModel, Identity = claimsIdentity };
-            }
-
-            return null;
         }
     }
 }

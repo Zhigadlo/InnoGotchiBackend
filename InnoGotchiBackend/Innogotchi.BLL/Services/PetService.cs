@@ -214,5 +214,23 @@ namespace InnoGotchi.BLL.Services
                 Update(pet);
             }
         }
+
+        public bool Death(int id, long deathTime)
+        {
+            PetDTO? petDTO = Get(id);
+            if (petDTO != null)
+            {
+                if (petDTO.DeathTime != DateTime.MinValue)
+                    return true;
+                petDTO.DeathTime = DateTime.MinValue.AddTicks(deathTime);
+                petDTO.FirstHappinessDate = DateTime.MinValue;
+                if (Update(petDTO))
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace InnoGotchi.Web.Options
+namespace InnoGotchi.BLL.Options
 {
     /// <summary>
     /// Contains options for jwt token
