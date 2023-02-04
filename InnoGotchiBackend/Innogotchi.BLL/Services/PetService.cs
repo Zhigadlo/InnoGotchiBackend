@@ -5,6 +5,7 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Validation;
+using System.Linq.Expressions;
 
 namespace InnoGotchi.BLL.Services
 {
@@ -59,7 +60,7 @@ namespace InnoGotchi.BLL.Services
 
             if (filterModel.Age != 0 && filterModel.GameYear != 0)
             {
-                pets = _database.Pets.FindAll(p =>
+                Func<Pet, bool> predicate = p =>
                 {
                     if (p.DeathTime != DateTime.MinValue)
                     {
@@ -71,13 +72,16 @@ namespace InnoGotchi.BLL.Services
                         var life = DateTime.UtcNow.AddTicks(-p.CreateTime.Ticks);
                         return life.Ticks >= filterModel.Age && life.Ticks < filterModel.Age + filterModel.GameYear;
                     }
-                });
+                };
+
+                Expression<Func<Pet, bool>> expr = p => predicate(p);
+                pets = _database.Pets.FindAll(expr);
             }
 
             if (filterModel.HungerLavel != -1 && filterModel.FeedingPeriod != 0)
             {
                 var minHungerTime = filterModel.HungerLavel * filterModel.FeedingPeriod;
-                pets = _database.Pets.FindAll(p =>
+                Func<Pet, bool> predicate = p =>
                 {
                     var hungerTime = (DateTime.UtcNow - p.LastFeedingTime).Ticks;
                     if (filterModel.IsLastHungerStage)
@@ -85,13 +89,15 @@ namespace InnoGotchi.BLL.Services
 
                     return hungerTime > minHungerTime && hungerTime < minHungerTime + filterModel.FeedingPeriod;
 
-                });
+                };
+                Expression<Func<Pet, bool>> expr = p => predicate(p);
+                pets = _database.Pets.FindAll(expr);
             }
 
             if (filterModel.ThirstyLavel != -1 && filterModel.DrinkingPeriod != 0)
             {
                 var minThirstyTime = filterModel.ThirstyLavel * filterModel.DrinkingPeriod;
-                pets = _database.Pets.FindAll(p =>
+                Func<Pet, bool> predicate = p =>
                 {
                     var thirstyTime = (DateTime.UtcNow - p.LastDrinkingTime).Ticks;
                     if (filterModel.IsLastThirstyStage)
@@ -99,7 +105,10 @@ namespace InnoGotchi.BLL.Services
 
                     return thirstyTime > minThirstyTime && thirstyTime < minThirstyTime + filterModel.DrinkingPeriod;
 
-                });
+                };
+
+                Expression<Func<Pet, bool>> expression = p => predicate(p);
+                pets = _database.Pets.FindAll(expression);
             }
 
             if (pets == null)

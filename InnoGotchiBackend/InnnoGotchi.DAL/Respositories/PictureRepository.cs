@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -41,9 +42,9 @@ namespace InnnoGotchi.DAL.Respositories
                 return false;
         }
 
-        public IQueryable<Picture> FindAll(Func<Picture, bool> predicate)
+        public IQueryable<Picture> FindAll(Expression<Func<Picture, bool>> expression)
         {
-            return GetAll().Where(predicate).AsQueryable();
+            return GetAll().Where(expression);
         }
 
         public Picture? FirstOrDefault(Func<Picture, bool> predicate)

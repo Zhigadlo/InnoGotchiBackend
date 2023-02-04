@@ -2,6 +2,7 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -41,9 +42,9 @@ namespace InnnoGotchi.DAL.Respositories
             return false;
         }
 
-        public IQueryable<User> FindAll(Func<User, bool> predicate)
+        public IQueryable<User> FindAll(Expression<Func<User, bool>> expression)
         {
-            return GetAll().Where(predicate).AsQueryable();
+            return GetAll().Where(expression);
         }
 
         public User? FirstOrDefault(Func<User, bool> predicate)
