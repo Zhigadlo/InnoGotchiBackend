@@ -19,7 +19,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<ColoborationRequest, bool> predicate)
         {
-            ColoborationRequest? request = FirstOrDefault(predicate);
+            ColoborationRequest? request = GetAll().FirstOrDefault(predicate);
             if (request == null)
                 return false;
 
@@ -48,14 +48,9 @@ namespace InnnoGotchi.DAL.Respositories
             return GetAll().Where(expression);
         }
 
-        public ColoborationRequest? FirstOrDefault(Func<ColoborationRequest, bool> predicate)
-        {
-            return GetAll().FirstOrDefault(predicate);
-        }
-
         public ColoborationRequest? Get(int id)
         {
-            ColoborationRequest? request = FirstOrDefault(r => r.Id == id);
+            ColoborationRequest? request = GetAll().FirstOrDefault(r => r.Id == id);
 
             if (request != null)
             {

@@ -23,11 +23,6 @@ namespace InnnoGotchi.DAL.Interfaces
         /// <param name="predicate"></param>
         IEnumerable<T> FindAll(Func<T, bool> predicate);
         /// <summary>
-        /// Finds first entity that matches the condition or returns null
-        /// </summary>
-        /// <param name="predicate"></param>
-        T? FirstOrDefault(Func<T, bool> predicate);
-        /// <summary>
         /// Inserts item in database
         /// </summary>
         /// <param name="item"></param>

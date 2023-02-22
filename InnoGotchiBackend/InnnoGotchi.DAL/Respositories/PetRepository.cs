@@ -1,7 +1,6 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
-using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -18,7 +17,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<Pet, bool> predicate)
         {
-            Pet? pet = FirstOrDefault(predicate);
+            Pet? pet = GetAll().FirstOrDefault(predicate);
             if (pet == null)
                 return false;
             else
@@ -46,14 +45,9 @@ namespace InnnoGotchi.DAL.Respositories
             return GetAll().Where(expression);
         }
 
-        public Pet? FirstOrDefault(Func<Pet, bool> predicate)
-        {
-            return GetAll().FirstOrDefault(predicate);
-        }
-
         public Pet? Get(int id)
         {
-            return FirstOrDefault(p => p.Id == id);
+            return GetAll().FirstOrDefault(p => p.Id == id);
         }
 
         public IQueryable<Pet> GetAll()

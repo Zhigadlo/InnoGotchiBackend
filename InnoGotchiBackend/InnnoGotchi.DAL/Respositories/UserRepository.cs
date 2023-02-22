@@ -19,7 +19,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<User, bool> predicate)
         {
-            User? user = FirstOrDefault(predicate);
+            User? user = GetAll().FirstOrDefault(predicate);
             if (user == null)
                 return false;
             else
@@ -47,14 +47,9 @@ namespace InnnoGotchi.DAL.Respositories
             return GetAll().Where(expression);
         }
 
-        public User? FirstOrDefault(Func<User, bool> predicate)
-        {
-            return GetAll().FirstOrDefault(predicate);
-        }
-
         public User? Get(int id)
         {
-            return FirstOrDefault(u => u.Id == id);
+            return GetAll().FirstOrDefault(u => u.Id == id);
         }
 
         public IQueryable<User> GetAll()
