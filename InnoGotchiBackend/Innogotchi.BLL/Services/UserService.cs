@@ -56,7 +56,7 @@ namespace InnoGotchi.BLL.Services
         }
         public IEnumerable<UserDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.GetAll());
+            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.AllItems());
         }
         public bool Update(UserDTO item)
         {
@@ -79,7 +79,7 @@ namespace InnoGotchi.BLL.Services
         /// <param name="newAvatar"></param>
         public bool UpdateAvatar(int id, byte[] newAvatar)
         {
-            User? user = _database.Users.GetAll().FirstOrDefault(u => u.Id == id);
+            User? user = _database.Users.AllItems().FirstOrDefault(u => u.Id == id);
             user.Avatar = newAvatar;
             var result = _validator.Validate(user);
             if (result.IsValid)
@@ -118,7 +118,7 @@ namespace InnoGotchi.BLL.Services
         /// <param name="password"></param>
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
-            User? user = _database.Users.GetAll().FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
+            User? user = _database.Users.AllItems().FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
             if (user != null)
             {
                 return _mapper.Map<UserDTO>(user);

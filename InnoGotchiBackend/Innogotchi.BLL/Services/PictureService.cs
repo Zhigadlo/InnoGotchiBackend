@@ -38,7 +38,7 @@ namespace InnoGotchi.BLL.Services
 
         public bool Delete(int id)
         {
-            Picture? picture = _database.Pictures.GetAll().FirstOrDefault(p => p.Id == id);
+            Picture? picture = _database.Pictures.AllItems().FirstOrDefault(p => p.Id == id);
             if (picture != null)
             {
                 var isDeleted = _database.Pictures.Delete(id);
@@ -60,7 +60,7 @@ namespace InnoGotchi.BLL.Services
 
         public IEnumerable<PictureDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<PictureDTO>>(_database.Pictures.GetAll());
+            return _mapper.Map<IEnumerable<PictureDTO>>(_database.Pictures.AllItems());
         }
 
         public bool Update(PictureDTO item)

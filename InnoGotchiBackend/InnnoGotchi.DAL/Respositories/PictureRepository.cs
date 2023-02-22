@@ -18,7 +18,7 @@ namespace InnnoGotchi.DAL.Respositories
         }
         public bool Contains(Func<Picture, bool> predicate)
         {
-            Picture? picture = GetAll().FirstOrDefault(predicate);
+            Picture? picture = AllItems().FirstOrDefault(predicate);
             if (picture == null)
                 return false;
 
@@ -44,15 +44,15 @@ namespace InnnoGotchi.DAL.Respositories
 
         public IEnumerable<Picture> FindAll(Func<Picture, bool> expression)
         {
-            return GetAll().Where(expression);
+            return AllItems().Where(expression);
         }
 
         public Picture? Get(int id)
         {
-            return GetAll().FirstOrDefault(p => p.Id == id);
+            return AllItems().FirstOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<Picture> GetAll()
+        public IQueryable<Picture> AllItems()
         {
             return _context.Pictures;
         }

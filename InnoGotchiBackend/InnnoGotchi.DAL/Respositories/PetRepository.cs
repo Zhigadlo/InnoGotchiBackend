@@ -17,7 +17,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<Pet, bool> predicate)
         {
-            Pet? pet = GetAll().FirstOrDefault(predicate);
+            Pet? pet = AllItems().FirstOrDefault(predicate);
             if (pet == null)
                 return false;
             else
@@ -42,15 +42,15 @@ namespace InnnoGotchi.DAL.Respositories
 
         public IEnumerable<Pet> FindAll(Func<Pet, bool> expression)
         {
-            return GetAll().Where(expression);
+            return AllItems().Where(expression);
         }
 
         public Pet? Get(int id)
         {
-            return GetAll().FirstOrDefault(p => p.Id == id);
+            return AllItems().FirstOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<Pet> GetAll()
+        public IQueryable<Pet> AllItems()
         {
             return _context.Pets;
         }

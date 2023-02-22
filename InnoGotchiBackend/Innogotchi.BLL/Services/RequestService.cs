@@ -64,7 +64,7 @@ namespace InnoGotchi.BLL.Services
 
         public IEnumerable<ColoborationRequestDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<ColoborationRequestDTO>>(_database.Requests.GetAll());
+            return _mapper.Map<IEnumerable<ColoborationRequestDTO>>(_database.Requests.AllItems());
         }
 
         public bool Update(ColoborationRequestDTO item)

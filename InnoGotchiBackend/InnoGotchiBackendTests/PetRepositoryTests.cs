@@ -31,7 +31,7 @@ namespace InnoGotchiBackendTests
         public void DeleteTest()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
-            var pets = uow.Pets.GetAll();
+            var pets = uow.Pets.AllItems();
             var pet = CreateValidPet();
             uow.Pets.Create(pet);
             uow.SaveChanges();
@@ -63,7 +63,7 @@ namespace InnoGotchiBackendTests
             uow.Pets.Create(pet1);
             uow.Pets.Create(pet2);
             uow.SaveChanges();
-            var pets = uow.Pets.GetAll();
+            var pets = uow.Pets.AllItems();
             pets.Count().Should().BeGreaterThanOrEqualTo(2);
         }
 

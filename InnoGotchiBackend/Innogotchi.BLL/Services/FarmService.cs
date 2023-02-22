@@ -57,7 +57,7 @@ namespace InnoGotchi.BLL.Services
 
         public IEnumerable<FarmDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<FarmDTO>>(_database.Farms.GetAll());
+            return _mapper.Map<IEnumerable<FarmDTO>>(_database.Farms.AllItems());
         }
 
         public bool Update(FarmDTO item)

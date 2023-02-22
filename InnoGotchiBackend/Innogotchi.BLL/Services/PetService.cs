@@ -46,7 +46,7 @@ namespace InnoGotchi.BLL.Services
         }
         public IEnumerable<PetDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.GetAll());
+            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.AllItems());
         }
         /// <summary>
         /// Gets PaginatedList object that have information about page with sorting and filtration
@@ -109,7 +109,7 @@ namespace InnoGotchi.BLL.Services
             }
 
             if (pets == null)
-                pets = _database.Pets.GetAll();
+                pets = _database.Pets.AllItems();
 
             int pageSize = 15;
             int totalPages = (int)Math.Ceiling(pets.Count() / (double)pageSize);

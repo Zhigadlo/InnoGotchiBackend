@@ -19,7 +19,7 @@ namespace InnnoGotchi.DAL.Respositories
 
         public bool Contains(Func<User, bool> predicate)
         {
-            User? user = GetAll().FirstOrDefault(predicate);
+            User? user = AllItems().FirstOrDefault(predicate);
             if (user == null)
                 return false;
             else
@@ -44,15 +44,15 @@ namespace InnnoGotchi.DAL.Respositories
 
         public IEnumerable<User> FindAll(Func<User, bool> expression)
         {
-            return GetAll().Where(expression);
+            return AllItems().Where(expression);
         }
 
         public User? Get(int id)
         {
-            return GetAll().FirstOrDefault(u => u.Id == id);
+            return AllItems().FirstOrDefault(u => u.Id == id);
         }
 
-        public IQueryable<User> GetAll()
+        public IQueryable<User> AllItems()
         {
             return _context.Users.Include(u => u.CollaboratedFarms)
                                  .Include(u => u.SentRequests)

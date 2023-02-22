@@ -11,7 +11,7 @@ namespace InnnoGotchi.DAL.Interfaces
         /// <summary>
         /// Gets all entities from database
         /// </summary>
-        IQueryable<T> GetAll();
+        IQueryable<T> AllItems();
         /// <summary>
         /// Gets entity by id from database
         /// </summary>
