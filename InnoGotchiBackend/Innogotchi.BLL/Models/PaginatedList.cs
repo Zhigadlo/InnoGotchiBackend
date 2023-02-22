@@ -8,9 +8,9 @@
     {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
-        public IEnumerable<T> Items { get; private set; }
+        public T Items { get; private set; }
 
-        public PaginatedList(IEnumerable<T> items, int count, int pageIndex, int pageSize)
+        public PaginatedList(T items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);

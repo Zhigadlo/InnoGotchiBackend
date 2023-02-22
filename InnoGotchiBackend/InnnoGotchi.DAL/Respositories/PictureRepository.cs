@@ -42,7 +42,7 @@ namespace InnnoGotchi.DAL.Respositories
                 return false;
         }
 
-        public IQueryable<Picture> FindAll(Expression<Func<Picture, bool>> expression)
+        public IEnumerable<Picture> FindAll(Func<Picture, bool> expression)
         {
             return GetAll().Where(expression);
         }

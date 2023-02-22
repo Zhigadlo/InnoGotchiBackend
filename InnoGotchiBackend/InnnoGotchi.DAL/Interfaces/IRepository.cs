@@ -21,7 +21,7 @@ namespace InnnoGotchi.DAL.Interfaces
         /// Finds all entities from database that matches the condition wherein the type of the data is known
         /// </summary>
         /// <param name="predicate"></param>
-        IQueryable<T> FindAll(Expression<Func<T, bool>> predicate);
+        IEnumerable<T> FindAll(Func<T, bool> predicate);
         /// <summary>
         /// Finds first entity that matches the condition or returns null
         /// </summary>

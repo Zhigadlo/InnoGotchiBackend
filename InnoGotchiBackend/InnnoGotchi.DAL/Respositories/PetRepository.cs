@@ -41,7 +41,7 @@ namespace InnnoGotchi.DAL.Respositories
             return false;
         }
 
-        public IQueryable<Pet> FindAll(Expression<Func<Pet, bool>> expression)
+        public IEnumerable<Pet> FindAll(Func<Pet, bool> expression)
         {
             return GetAll().Where(expression);
         }

@@ -54,9 +54,9 @@ namespace InnoGotchi.BLL.Services
         /// <param name="page"></param>
         /// <param name="sortType"></param>
         /// <param name="filterModel"></param>
-        public PaginatedList<PetDTO> GetPage(int page, string sortType, PetFilterModel filterModel)
+        public PaginatedList<IEnumerable<PetDTO>> GetPage(int page, string sortType, PetFilterModel filterModel)
         {
-            IQueryable<Pet>? pets = null;
+            IEnumerable<Pet>? pets = null;
 
             if (filterModel.Age != 0 && filterModel.GameYear != 0)
             {
@@ -74,8 +74,7 @@ namespace InnoGotchi.BLL.Services
                     }
                 };
 
-                Expression<Func<Pet, bool>> expr = p => predicate(p);
-                pets = _database.Pets.FindAll(expr);
+                pets = _database.Pets.FindAll(predicate);
             }
 
             if (filterModel.HungerLavel != -1 && filterModel.FeedingPeriod != 0)
@@ -90,8 +89,7 @@ namespace InnoGotchi.BLL.Services
                     return hungerTime > minHungerTime && hungerTime < minHungerTime + filterModel.FeedingPeriod;
 
                 };
-                Expression<Func<Pet, bool>> expr = p => predicate(p);
-                pets = _database.Pets.FindAll(expr);
+                pets = _database.Pets.FindAll(predicate);
             }
 
             if (filterModel.ThirstyLavel != -1 && filterModel.DrinkingPeriod != 0)
@@ -107,8 +105,7 @@ namespace InnoGotchi.BLL.Services
 
                 };
 
-                Expression<Func<Pet, bool>> expression = p => predicate(p);
-                pets = _database.Pets.FindAll(expression);
+                pets = _database.Pets.FindAll(predicate);
             }
 
             if (pets == null)
@@ -162,8 +159,8 @@ namespace InnoGotchi.BLL.Services
             var count = pets.Count();
             pets = pets.Skip((page - 1) * pageSize).Take(pageSize);
 
-            var petsDTO = _mapper.Map<IEnumerable<PetDTO>>(pets?.AsEnumerable());
-            var result = new PaginatedList<PetDTO>(petsDTO, count, page, pageSize);
+            var petsDTO = _mapper.Map<IEnumerable<PetDTO>>(pets);
+            var result = new PaginatedList<IEnumerable<PetDTO>>(petsDTO, count, page, pageSize);
 
             return result;
         }

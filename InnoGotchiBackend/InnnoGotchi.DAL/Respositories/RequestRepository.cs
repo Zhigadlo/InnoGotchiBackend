@@ -43,7 +43,7 @@ namespace InnnoGotchi.DAL.Respositories
             return false;
         }
 
-        public IQueryable<ColoborationRequest> FindAll(Expression<Func<ColoborationRequest, bool>> expression)
+        public IEnumerable<ColoborationRequest> FindAll(Func<ColoborationRequest, bool> expression)
         {
             return GetAll().Where(expression);
         }
