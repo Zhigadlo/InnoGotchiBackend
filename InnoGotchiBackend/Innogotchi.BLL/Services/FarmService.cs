@@ -28,7 +28,7 @@ namespace InnoGotchi.BLL.Services
             var result = _validator.Validate(farm);
             if (!result.IsValid)
                 return -1;
-            
+
             _database.Farms.Create(farm);
             await _database.SaveChangesAsync();
             return farm.Id;
@@ -36,10 +36,10 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            if (!_database.Farms.Contains(f => f.Id == id))
+            if (!(await _database.Farms.ContainsAsync(f => f.Id == id)))
                 return false;
 
-            var isDeleted = _database.Farms.Delete(id);
+            var isDeleted = await _database.Farms.DeleteAsync(id);
             if (!isDeleted)
                 return false;
 
@@ -47,9 +47,9 @@ namespace InnoGotchi.BLL.Services
             return true;
         }
 
-        public FarmDTO? Get(int id, bool isTracking = true)
+        public async Task<FarmDTO?> GetAsync(int id, bool isTracking = true)
         {
-            return _mapper.Map<FarmDTO>(_database.Farms.Get(id, isTracking));
+            return _mapper.Map<FarmDTO>(await _database.Farms.GetAsync(id, isTracking));
         }
 
         public IEnumerable<FarmDTO> GetAll(bool isTracking = true)
@@ -57,11 +57,16 @@ namespace InnoGotchi.BLL.Services
             return _mapper.Map<IEnumerable<FarmDTO>>(_database.Farms.AllItems(isTracking));
         }
 
+        public IEnumerable<string> GetAllNames()
+        {
+            return _database.Farms.AllItems(false).Select(f => f.Name);
+        }
+
         public async Task<bool> UpdateAsync(FarmDTO item)
         {
             Farm farm = _mapper.Map<Farm>(item);
             var result = _validator.Validate(farm);
-            if(!result.IsValid)
+            if (!result.IsValid)
                 return false;
 
             _database.Farms.Update(farm);

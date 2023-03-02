@@ -27,7 +27,7 @@ namespace InnoGotchi.BLL.Services
             var result = _validator.Validate(picture);
             if (!result.IsValid)
                 return -1;
-            
+
             _database.Pictures.Create(picture);
             await _database.SaveChangesAsync();
             return picture.Id;
@@ -35,11 +35,11 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            Picture? picture = _database.Pictures.Get(id);
-            if(picture == null) 
+            Picture? picture = await _database.Pictures.GetAsync(id);
+            if (picture == null)
                 return false;
-            
-            var isDeleted = _database.Pictures.Delete(id);
+
+            var isDeleted = await _database.Pictures.DeleteAsync(id);
             if (!isDeleted)
                 return false;
 
@@ -47,9 +47,9 @@ namespace InnoGotchi.BLL.Services
             return true;
         }
 
-        public PictureDTO? Get(int id, bool isTracking = true)
+        public async Task<PictureDTO?> GetAsync(int id, bool isTracking = true)
         {
-            Picture? picture = _database.Pictures.Get(id, isTracking);
+            Picture? picture = await _database.Pictures.GetAsync(id, isTracking);
             return _mapper.Map<PictureDTO>(picture);
         }
 
@@ -64,7 +64,7 @@ namespace InnoGotchi.BLL.Services
             var result = _validator.Validate(picture);
             if (!result.IsValid)
                 return false;
-            
+
             _database.Pictures.Update(picture);
             await _database.SaveChangesAsync();
             return true;

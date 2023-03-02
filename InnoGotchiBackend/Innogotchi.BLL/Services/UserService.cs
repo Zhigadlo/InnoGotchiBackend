@@ -5,6 +5,7 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Options;
 using InnoGotchi.BLL.Validation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,7 +31,7 @@ namespace InnoGotchi.BLL.Services
         }
         public async Task<int> CreateAsync(UserDTO item)
         {
-            if (_database.Users.Contains(u => u.Email == item.Email))
+            if (await _database.Users.ContainsAsync(u => u.Email == item.Email))
                 throw new Exception("This email is already in use");
 
             User newUser = _mapper.Map<User>(item);
@@ -45,9 +46,9 @@ namespace InnoGotchi.BLL.Services
             return newUser.Id;
 
         }
-        public UserDTO? Get(int id, bool isTracking = true)
+        public async Task<UserDTO?> GetAsync(int id, bool isTracking = true)
         {
-            User? user = _database.Users.Get(id, isTracking);
+            User? user = await _database.Users.GetAsync(id, isTracking);
             return _mapper.Map<UserDTO>(user);
         }
         public IEnumerable<UserDTO> GetAll(bool isTracking = true)
@@ -59,7 +60,7 @@ namespace InnoGotchi.BLL.Services
             User user = _mapper.Map<User>(item);
             user.PasswordHash = PasswordToHash(item.Password);
             var result = _validator.Validate(user);
-            if(!result.IsValid) 
+            if (!result.IsValid)
                 return false;
 
             _database.Users.Update(user);
@@ -73,7 +74,7 @@ namespace InnoGotchi.BLL.Services
         /// <param name="newAvatar"></param>
         public async Task<bool> UpdateAvatarAsync(int id, byte[] newAvatar)
         {
-            User? user = _database.Users.Get(id);
+            User? user = await _database.Users.GetAsync(id);
             if (user == null)
                 return false;
 
@@ -95,7 +96,7 @@ namespace InnoGotchi.BLL.Services
         /// <param name="confirmPassword"></param>
         public async Task<bool> UpdatePasswordAsync(int id, string oldPassword, string newPassword, string confirmPassword)
         {
-            User? user = _database.Users.Get(id);
+            User? user = await _database.Users.GetAsync(id);
             if (user == null || user.PasswordHash != PasswordToHash(oldPassword) || newPassword != confirmPassword)
                 return false;
 
@@ -109,16 +110,16 @@ namespace InnoGotchi.BLL.Services
         /// </summary>
         /// <param name="email"></param>
         /// <param name="password"></param>
-        public UserDTO FindUserByEmailAndPassword(string email, string password)
+        public async Task<UserDTO> FindUserByEmailAndPasswordAsync(string email, string password)
         {
-            User? user = _database.Users.AllItems().FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
+            User? user = await _database.Users.AllItems().FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
             return _mapper.Map<UserDTO>(user);
         }
         /// <summary>
         /// Returns all coloborators for user by his id 
         /// </summary>
         /// <param name="userId"></param>
-        public IEnumerable<UserDTO>? Coloborators(int userId)
+        public async Task<IEnumerable<UserDTO>?> ColoboratorsAsync(int userId)
         {
             var requests = _database.Requests.FindAll(r => r.IsConfirmed && (r.RequestOwnerId == userId || r.RequestReceipientId == userId));
 
@@ -127,13 +128,13 @@ namespace InnoGotchi.BLL.Services
             {
                 if (r.RequestOwnerId == userId)
                 {
-                    var user = _database.Users.Get(r.RequestReceipientId);
+                    var user = await _database.Users.GetAsync(r.RequestReceipientId);
                     coloborators.Add(_mapper.Map<UserDTO>(user));
                 }
 
                 if (r.RequestReceipientId == userId)
                 {
-                    var user = _database.Users.Get(r.RequestOwnerId);
+                    var user = await _database.Users.GetAsync(r.RequestOwnerId);
                     coloborators.Add(_mapper.Map<UserDTO>(user));
                 }
             }
@@ -143,15 +144,15 @@ namespace InnoGotchi.BLL.Services
         /// Gets all users that sent request to user by id
         /// </summary>
         /// <param name="id">User that gets requests id</param>
-        public IEnumerable<UserDTO>? UsersSentRequest(int id)
+        public async Task<IEnumerable<UserDTO>?> UsersSentRequestAsync(int id)
         {
             var usersSentRequests = new List<UserDTO>();
-            var user = Get(id);
+            var user = await GetAsync(id);
             foreach (var rr in user.ReceivedRequests)
             {
                 if (rr.IsConfirmed == false)
                 {
-                    var u = Get(rr.RequestOwnerId);
+                    var u = await GetAsync(rr.RequestOwnerId);
                     usersSentRequests.Add(u);
                 }
             };
@@ -162,15 +163,15 @@ namespace InnoGotchi.BLL.Services
         /// Gets all users that received requests from user by id
         /// </summary>
         /// <param name="id">User that sent request id</param>
-        public IEnumerable<UserDTO>? UsersReceivedRequest(int id)
+        public async Task<IEnumerable<UserDTO>?> UsersReceivedRequestAsync(int id)
         {
             var usersReceivedRequests = new List<UserDTO>();
-            var user = Get(id);
+            var user = await GetAsync(id);
             foreach (var sr in user.SentRequests)
             {
                 if (sr.IsConfirmed == false)
                 {
-                    var u = Get(sr.RequestReceipientId);
+                    var u = await GetAsync(sr.RequestReceipientId);
                     usersReceivedRequests.Add(u);
                 }
             };
@@ -180,10 +181,10 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            if (!_database.Pets.Contains(p => p.Id == id))
+            if (!await _database.Pets.ContainsAsync(p => p.Id == id))
                 return false;
-            
-            var isDeleted = _database.Users.Delete(id);
+
+            var isDeleted = await _database.Users.DeleteAsync(id);
             if (!isDeleted)
                 return false;
 
@@ -208,9 +209,9 @@ namespace InnoGotchi.BLL.Services
             }
         }
 
-        public SecurityTokenModel? Token(string email, string password, IConfiguration configuration)
+        public async Task<SecurityTokenModel?> TokenAsync(string email, string password, IConfiguration configuration)
         {
-            UserDTO? person = FindUserByEmailAndPassword(email, password);
+            UserDTO? person = await FindUserByEmailAndPasswordAsync(email, password);
 
             if (person == null)
                 return null;

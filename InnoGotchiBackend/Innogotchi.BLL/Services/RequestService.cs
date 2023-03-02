@@ -39,20 +39,20 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            if (!_database.Requests.Contains(r => r.Id == id))
+            if (!await _database.Requests.ContainsAsync(r => r.Id == id))
                 return false;
-            
-            var isDeleted = _database.Requests.Delete(id);
+
+            var isDeleted = await _database.Requests.DeleteAsync(id);
             if (!isDeleted)
                 return false;
 
             await _database.SaveChangesAsync();
-            return true;  
+            return true;
         }
 
-        public ColoborationRequestDTO? Get(int id, bool isTracking = true)
+        public async Task<ColoborationRequestDTO?> GetAsync(int id, bool isTracking = true)
         {
-            ColoborationRequest? request = _database.Requests.Get(id, isTracking);
+            ColoborationRequest? request = await _database.Requests.GetAsync(id, isTracking);
             return _mapper.Map<ColoborationRequestDTO>(request);
         }
 
@@ -63,7 +63,7 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> ConfirmAsync(int id)
         {
-            var request = _database.Requests.Get(id, false);
+            var request = await _database.Requests.GetAsync(id, false);
             if (request == null)
                 return false;
 

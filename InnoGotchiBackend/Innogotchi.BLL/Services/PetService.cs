@@ -24,7 +24,7 @@ namespace InnoGotchi.BLL.Services
         }
         public async Task<int> CreateAsync(PetDTO item)
         {
-            if (_database.Pets.Contains(p => p.Name == item.Name))
+            if (await _database.Pets.ContainsAsync(p => p.Name == item.Name))
                 return -1;
 
             Pet newPet = _mapper.Map<Pet>(item);
@@ -41,9 +41,9 @@ namespace InnoGotchi.BLL.Services
             _database.Detach(newPet);
             return newPet.Id;
         }
-        public PetDTO? Get(int id, bool isTracking = true)
+        public async Task<PetDTO?> GetAsync(int id, bool isTracking = true)
         {
-            return _mapper.Map<PetDTO>(_database.Pets.Get(id, isTracking));
+            return _mapper.Map<PetDTO>(await _database.Pets.GetAsync(id, isTracking));
         }
         public IEnumerable<PetDTO> GetAll(bool isTracking = true)
         {
@@ -173,7 +173,7 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> UpdateNameAsync(int id, string newName)
         {
-            var pet = _database.Pets.Get(id);
+            var pet = await _database.Pets.GetAsync(id);
             if (pet == null)
                 return false;
 
@@ -196,17 +196,17 @@ namespace InnoGotchi.BLL.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var pet = _database.Pets.Get(id);
+            var pet = await _database.Pets.GetAsync(id);
             if (pet == null)
                 return false;
-            
-            var isDeleted = _database.Pets.Delete(id);
+
+            var isDeleted = await _database.Pets.DeleteAsync(id);
             if (!isDeleted)
                 return false;
 
             await _database.SaveChangesAsync();
             return true;
-            
+
         }
         /// <summary>
         /// Feeds pet by id
@@ -214,7 +214,7 @@ namespace InnoGotchi.BLL.Services
         /// <param name="id"></param>
         public async Task FeedAsync(int id)
         {
-            PetDTO? pet = Get(id);
+            PetDTO? pet = await GetAsync(id);
             if (pet != null)
             {
                 pet.Feed();
@@ -228,17 +228,22 @@ namespace InnoGotchi.BLL.Services
         /// <param name="id"></param>
         public async Task DrinkAsync(int id)
         {
-            PetDTO? pet = Get(id);
+            PetDTO? pet = await GetAsync(id);
             if (pet != null)
             {
                 pet.Drink();
                 await UpdateAsync(pet);
             }
         }
-
+        /// <summary>
+        /// Sends the pet to a heaven
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="deathTime"></param>
+        /// <returns></returns>
         public async Task<bool> DeathAsync(int id, long deathTime)
         {
-            PetDTO? petDTO = Get(id);
+            PetDTO? petDTO = await GetAsync(id);
             if (petDTO == null)
                 return false;
 
