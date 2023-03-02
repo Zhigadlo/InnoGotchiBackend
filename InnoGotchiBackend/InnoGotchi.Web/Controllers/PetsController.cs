@@ -58,9 +58,9 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="id">Pet id</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PetDTO), 200)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(_service.Get(id));
+            return Ok(await _service.GetAsync(id));
         }
         /// <summary>
         /// Creates pet and returns created pet id

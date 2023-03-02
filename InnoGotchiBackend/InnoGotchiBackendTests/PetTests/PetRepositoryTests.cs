@@ -25,7 +25,7 @@ namespace InnoGotchiBackendTests.PetTests
 
             uow.Pets.Create(pet);
             await uow.SaveChangesAsync();
-            uow.Pets.Contains(p => p.Id == pet.Id).Should().BeTrue();
+            (await uow.Pets.ContainsAsync(p => p.Id == pet.Id)).Should().BeTrue();
         }
         [Fact]
         public async Task DeleteTestAsync()
@@ -36,9 +36,9 @@ namespace InnoGotchiBackendTests.PetTests
             uow.Pets.Create(pet);
             await uow.SaveChangesAsync();
             uow.Detach(pet);
-            uow.Pets.Delete(pet.Id);
+            await uow.Pets.DeleteAsync(pet.Id);
             await uow.SaveChangesAsync();
-            uow.Pets.Contains(p => p.Id == pet.Id).Should().BeFalse();
+            (await uow.Pets.ContainsAsync(p => p.Id == pet.Id)).Should().BeFalse();
         }
         [Fact]
         public async Task UpdateTestAsync()
@@ -51,7 +51,7 @@ namespace InnoGotchiBackendTests.PetTests
             pet.Name = "Test";
             uow.Pets.Update(pet);
             await uow.SaveChangesAsync();
-            uow.Pets.Contains(p => p.Id == pet.Id && p.Name == "Test").Should().BeTrue();
+            (await uow.Pets.ContainsAsync(p => p.Id == pet.Id && p.Name == "Test")).Should().BeTrue();
         }
 
         [Fact]

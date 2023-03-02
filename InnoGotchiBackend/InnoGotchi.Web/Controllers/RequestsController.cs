@@ -33,9 +33,9 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="id">Request id</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ColoborationRequestDTO), 200)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(_service.Get(id, false));
+            return Ok(await _service.GetAsync(id, false));
         }
         /// <summary>
         /// Deletes coloboration request by id

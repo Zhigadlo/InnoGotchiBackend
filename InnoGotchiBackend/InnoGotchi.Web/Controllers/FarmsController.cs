@@ -36,7 +36,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public IActionResult GetAllNames()
         {
-            return Ok(_service.GetAll().Select(f => f.Name));
+            return Ok(_service.GetAllNames());
         }
         /// <summary>
         /// Gets farm by id
@@ -45,9 +45,9 @@ namespace InnoGotchi.Web.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(FarmDTO), 200)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(_service.Get(id));
+            return Ok(await _service.GetAsync(id));
         }
         /// <summary>
         /// Creates farm and returns created farm id

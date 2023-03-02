@@ -27,7 +27,7 @@
             request.IsConfirmed = true;
             uow.Requests.Update(request);
             await uow.SaveChangesAsync();
-            var result = uow.Requests.Get(request.Id);
+            var result = await uow.Requests.GetAsync(request.Id);
             result.Should().NotBeNull();
             result.IsConfirmed.Should().BeTrue();
         }

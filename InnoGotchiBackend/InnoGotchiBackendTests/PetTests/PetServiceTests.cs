@@ -29,7 +29,7 @@ namespace InnoGotchiBackendTests.PetTests
             var newPet = CreateValidPetDTO();
             int newPetId = await service.CreateAsync(newPet);
             newPetId.Should().NotBe(-1);
-            var actualPet = service.Get(newPetId);
+            var actualPet = await service.GetAsync(newPetId);
             actualPet.Should().NotBeNull();
             actualPet?.Id.Should().Be(newPetId);
         }
@@ -43,7 +43,7 @@ namespace InnoGotchiBackendTests.PetTests
             newPetId.Should().NotBe(-1);
             var result = await service.DeleteAsync(newPetId);
             result.Should().Be(true);
-            service.Get(newPetId).Should().BeNull();
+            (await service.GetAsync(newPetId)).Should().BeNull();
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace InnoGotchiBackendTests.PetTests
             newPetId.Should().NotBe(-1);
             var result = await service.UpdateNameAsync(newPetId, "Test");
             result.Should().Be(true);
-            var updatedPet = service.Get(newPetId);
+            var updatedPet = await service.GetAsync(newPetId);
             updatedPet.Should().NotBeNull();
             updatedPet?.Id.Should().Be(newPetId);
             updatedPet?.Name.Should().Be("Test");

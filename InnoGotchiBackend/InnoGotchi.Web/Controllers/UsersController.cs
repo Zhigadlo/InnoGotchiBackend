@@ -51,9 +51,9 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="id">User id</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserDTO), 200)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(_service.Get(id));
+            return Ok(await _service.GetAsync(id));
         }
         /// <summary>
         /// Gets all coloborators by user id
@@ -61,9 +61,9 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="id">User id</param>
         [HttpGet("coloborators/{id}")]
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
-        public IActionResult Coloborators(int id)
+        public async Task<IActionResult> ColoboratorsAsync(int id)
         {
-            return Ok(_service.Coloborators(id));
+            return Ok(await _service.ColoboratorsAsync(id));
         }
         /// <summary>
         /// Gets users that sent coloboration requests to user by id
@@ -73,7 +73,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
         public IActionResult GetUsersThatSentRequest(int id)
         {
-            return Ok(_service.UsersSentRequest(id));
+            return Ok(_service.UsersSentRequestAsync(id));
         }
         /// <summary>
         /// Gets users that received coloboration requests from user by id
@@ -83,7 +83,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
         public IActionResult GetUsersThatReceivedRequest(int id)
         {
-            return Ok(_service.UsersReceivedRequest(id));
+            return Ok(_service.UsersReceivedRequestAsync(id));
         }
         /// <summary>
         /// Creates user
@@ -171,12 +171,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpGet("authUser")]
         [ProducesResponseType(typeof(UserDTO), 200)]
         [ProducesResponseType(404)]
-        public IActionResult GetAuthorizedUser()
+        public async Task<IActionResult> GetAuthorizedUserAsync()
         {
             var userId = User.FindFirstValue(nameof(SecurityTokenModel.UserId));
             if (userId.IsNullOrEmpty())
                 return NotFound();
-            return Json(_service.Get(int.Parse(userId)));
+            return Json(await _service.GetAsync(int.Parse(userId)));
         }
         /// <summary>
         /// Gets jwt token for user by email and password
@@ -187,9 +187,9 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost("token")]
         [ProducesResponseType(typeof(SecurityTokenModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult Token(string email, string password)
+        public async Task<IActionResult> TokenAsync(string email, string password)
         {
-            var token = _service.Token(email, password, _configuration);
+            var token = await _service.TokenAsync(email, password, _configuration);
             if (token == null)
                 return BadRequest(new { errorText = "Invalid email or password." });
 
@@ -203,9 +203,9 @@ namespace InnoGotchi.Web.Controllers
         /// <param name="password">User password</param>
         [AllowAnonymous]
         [HttpGet("{email}&{password}")]
-        public UserDTO? GetUser(string email, string password)
+        public async Task<UserDTO?> GetUserAsync(string email, string password)
         {
-            return _service.FindUserByEmailAndPassword(email, password);
+            return await _service.FindUserByEmailAndPasswordAsync(email, password);
         }
     }
 }
