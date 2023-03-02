@@ -2,7 +2,6 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
-using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Options;
 using InnoGotchi.BLL.Validation;
@@ -18,7 +17,7 @@ namespace InnoGotchi.BLL.Services
     /// <summary>
     /// Represents service that get access to user entities
     /// </summary>
-    public class UserService : IService<UserDTO>
+    public class UserService
     {
         private InnoGotchiUnitOfWork _database;
         private IMapper _mapper;
@@ -29,67 +28,63 @@ namespace InnoGotchi.BLL.Services
             _mapper = mapper;
             _validator = new UserValidator();
         }
-        public int Create(UserDTO item)
+        public async Task<int> CreateAsync(UserDTO item)
         {
             if (_database.Users.Contains(u => u.Email == item.Email))
                 throw new Exception("This email is already in use");
 
             User newUser = _mapper.Map<User>(item);
             var result = _validator.Validate(newUser);
-            if (result.IsValid)
-            {
-                newUser.PasswordHash = PasswordToHash(item.Password);
-                _database.Users.Create(newUser);
-                _database.SaveChanges();
-                return newUser.Id;
-            }
-            else
+
+            if (!result.IsValid)
                 return -1;
+
+            newUser.PasswordHash = PasswordToHash(item.Password);
+            _database.Users.Create(newUser);
+            await _database.SaveChangesAsync();
+            return newUser.Id;
+
         }
-        public UserDTO? Get(int id)
+        public UserDTO? Get(int id, bool isTracking = true)
         {
-            User? user = _database.Users.Get(id);
-            if (user == null)
-                return null;
-            else
-                return _mapper.Map<UserDTO>(user);
+            User? user = _database.Users.Get(id, isTracking);
+            return _mapper.Map<UserDTO>(user);
         }
-        public IEnumerable<UserDTO> GetAll()
+        public IEnumerable<UserDTO> GetAll(bool isTracking = true)
         {
-            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.AllItems());
+            return _mapper.Map<IEnumerable<UserDTO>>(_database.Users.AllItems(isTracking));
         }
-        public bool Update(UserDTO item)
+        public async Task<bool> UpdateAsync(UserDTO item)
         {
             User user = _mapper.Map<User>(item);
             user.PasswordHash = PasswordToHash(item.Password);
             var result = _validator.Validate(user);
-            if (result.IsValid)
-            {
-                _database.Users.Update(user);
-                _database.SaveChanges();
-                return true;
-            }
+            if(!result.IsValid) 
+                return false;
 
-            return false;
+            _database.Users.Update(user);
+            await _database.SaveChangesAsync();
+            return true;
         }
         /// <summary>
         /// Updates user avatar by id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="newAvatar"></param>
-        public bool UpdateAvatar(int id, byte[] newAvatar)
+        public async Task<bool> UpdateAvatarAsync(int id, byte[] newAvatar)
         {
-            User? user = _database.Users.AllItems().FirstOrDefault(u => u.Id == id);
+            User? user = _database.Users.Get(id);
+            if (user == null)
+                return false;
+
             user.Avatar = newAvatar;
             var result = _validator.Validate(user);
-            if (result.IsValid)
-            {
-                _database.Users.Update(user);
-                _database.SaveChanges();
-                return true;
-            }
-            else
+            if (!result.IsValid)
                 return false;
+
+            _database.Users.Update(user);
+            await _database.SaveChangesAsync();
+            return true;
         }
         /// <summary>
         /// Updates user password
@@ -98,18 +93,16 @@ namespace InnoGotchi.BLL.Services
         /// <param name="oldPassword"></param>
         /// <param name="newPassword"></param>
         /// <param name="confirmPassword"></param>
-        public bool UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        public async Task<bool> UpdatePasswordAsync(int id, string oldPassword, string newPassword, string confirmPassword)
         {
             User? user = _database.Users.Get(id);
-            if (user != null && user.PasswordHash == PasswordToHash(oldPassword) && newPassword == confirmPassword)
-            {
-                user.PasswordHash = PasswordToHash(newPassword);
-                _database.Users.Update(user);
-                _database.SaveChanges();
-                return true;
-            }
+            if (user == null || user.PasswordHash != PasswordToHash(oldPassword) || newPassword != confirmPassword)
+                return false;
 
-            return false;
+            user.PasswordHash = PasswordToHash(newPassword);
+            _database.Users.Update(user);
+            await _database.SaveChangesAsync();
+            return true;
         }
         /// <summary>
         /// Finds and returns user by email and password
@@ -119,12 +112,7 @@ namespace InnoGotchi.BLL.Services
         public UserDTO FindUserByEmailAndPassword(string email, string password)
         {
             User? user = _database.Users.AllItems().FirstOrDefault(u => u.Email == email && u.PasswordHash == PasswordToHash(password));
-            if (user != null)
-            {
-                return _mapper.Map<UserDTO>(user);
-            }
-            else
-                return null;
+            return _mapper.Map<UserDTO>(user);
         }
         /// <summary>
         /// Returns all coloborators for user by his id 
@@ -142,7 +130,6 @@ namespace InnoGotchi.BLL.Services
                     var user = _database.Users.Get(r.RequestReceipientId);
                     coloborators.Add(_mapper.Map<UserDTO>(user));
                 }
-
 
                 if (r.RequestReceipientId == userId)
                 {
@@ -191,18 +178,17 @@ namespace InnoGotchi.BLL.Services
             return usersReceivedRequests.AsEnumerable();
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            if (_database.Pets.Contains(p => p.Id == id))
-            {
-                var isDeleted = _database.Users.Delete(id);
-                if (!isDeleted)
-                    return false;
+            if (!_database.Pets.Contains(p => p.Id == id))
+                return false;
+            
+            var isDeleted = _database.Users.Delete(id);
+            if (!isDeleted)
+                return false;
 
-                _database.SaveChanges();
-                return true;
-            }
-            return false;
+            await _database.SaveChangesAsync();
+            return true;
         }
         /// <summary>
         /// Encryptes the password

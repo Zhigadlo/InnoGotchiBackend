@@ -2,17 +2,15 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.DTO;
-using InnoGotchi.BLL.Interfaces;
 using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Validation;
-using System.Linq.Expressions;
 
 namespace InnoGotchi.BLL.Services
 {
     /// <summary>
     /// Represents service that get access to pet entities
     /// </summary>
-    public class PetService : IService<PetDTO>
+    public class PetService
     {
         private InnoGotchiUnitOfWork _database;
         private IMapper _mapper;
@@ -24,29 +22,28 @@ namespace InnoGotchi.BLL.Services
             _mapper = mapper;
             _validator = new PetValidator();
         }
-        public int Create(PetDTO item)
+        public async Task<int> CreateAsync(PetDTO item)
         {
             if (_database.Pets.Contains(p => p.Name == item.Name))
                 return -1;
 
             Pet newPet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(newPet);
-            if (result.IsValid)
-            {
-                _database.Pets.Create(newPet);
-                _database.SaveChanges();
-                return newPet.Id;
-            }
-            else
+            if (!result.IsValid)
                 return -1;
+
+            _database.Pets.Create(newPet);
+            await _database.SaveChangesAsync();
+            _database.Detach(newPet);
+            return newPet.Id;
         }
-        public PetDTO? Get(int id)
+        public PetDTO? Get(int id, bool isTracking = true)
         {
-            return _mapper.Map<PetDTO>(_database.Pets.Get(id));
+            return _mapper.Map<PetDTO>(_database.Pets.Get(id, isTracking));
         }
-        public IEnumerable<PetDTO> GetAll()
+        public IEnumerable<PetDTO> GetAll(bool isTracking = true)
         {
-            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.AllItems());
+            return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.AllItems(isTracking));
         }
         /// <summary>
         /// Gets PaginatedList object that have information about page with sorting and filtration
@@ -164,46 +161,55 @@ namespace InnoGotchi.BLL.Services
 
             return result;
         }
-        public bool Update(PetDTO item)
+
+        public async Task<bool> UpdateNameAsync(int id, string newName)
+        {
+            var pet = _database.Pets.Get(id);
+            if (pet == null)
+                return false;
+
+            pet.Name = newName;
+            _database.Pets.Update(pet);
+            await _database.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> UpdateAsync(PetDTO item)
         {
             Pet pet = _mapper.Map<Pet>(item);
             var result = _validator.Validate(pet);
-            if (result.IsValid)
-            {
-                _database.Pets.Update(pet);
-                _database.SaveChanges();
-                return true;
-            }
+            if (!result.IsValid)
+                return false;
 
-            return false;
+            _database.Pets.Update(pet);
+            await _database.SaveChangesAsync();
+            return true;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var pet = _database.Pets.Get(id);
-            if (pet != null)
-            {
-                var isDeleted = _database.Pets.Delete(id);
-                if (!isDeleted)
-                    return false;
+            if (pet == null)
+                return false;
+            
+            var isDeleted = _database.Pets.Delete(id);
+            if (!isDeleted)
+                return false;
 
-                _database.SaveChanges();
-                return true;
-            }
-
-            return false;
+            await _database.SaveChangesAsync();
+            return true;
+            
         }
         /// <summary>
         /// Feeds pet by id
         /// </summary>
         /// <param name="id"></param>
-        public void Feed(int id)
+        public async Task FeedAsync(int id)
         {
             PetDTO? pet = Get(id);
             if (pet != null)
             {
                 pet.Feed();
-                Update(pet);
+                await UpdateAsync(pet);
             }
         }
 
@@ -211,32 +217,31 @@ namespace InnoGotchi.BLL.Services
         /// Gives a drink to pet by id
         /// </summary>
         /// <param name="id"></param>
-        public void Drink(int id)
+        public async Task DrinkAsync(int id)
         {
             PetDTO? pet = Get(id);
             if (pet != null)
             {
                 pet.Drink();
-                Update(pet);
+                await UpdateAsync(pet);
             }
         }
 
-        public bool Death(int id, long deathTime)
+        public async Task<bool> DeathAsync(int id, long deathTime)
         {
             PetDTO? petDTO = Get(id);
-            if (petDTO != null)
-            {
-                if (petDTO.DeathTime != DateTime.MinValue)
-                    return true;
-                petDTO.DeathTime = DateTime.MinValue.AddTicks(deathTime);
-                petDTO.FirstHappinessDate = DateTime.MinValue;
-                if (Update(petDTO))
-                    return true;
-                else
-                    return false;
-            }
-            else
+            if (petDTO == null)
                 return false;
+
+            if (petDTO.DeathTime != DateTime.MinValue)
+                return true;
+
+            petDTO.DeathTime = DateTime.MinValue.AddTicks(deathTime);
+            petDTO.FirstHappinessDate = DateTime.MinValue;
+            if (await UpdateAsync(petDTO))
+                return true;
+
+            return false;
         }
     }
 }
