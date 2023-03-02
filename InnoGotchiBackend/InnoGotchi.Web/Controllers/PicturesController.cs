@@ -63,8 +63,9 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            if (_service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return Ok();
 
             return BadRequest();

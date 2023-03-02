@@ -7,7 +7,7 @@ using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InnoGotchiBackendTests
+namespace InnoGotchiBackendTests.PetTests
 {
     public class PetControllerTests
     {
@@ -23,29 +23,28 @@ namespace InnoGotchiBackendTests
                     .UseInMemoryDatabase(nameof(PetRepositoryTests))
                     .Options;
             var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile> { new MapperProfile(), new ViewModelProfile() }));
-            //var service = new PetService(new InnoGotchiUnitOfWork(contextOptions), new Mapper(config));
             _fixture.Register(() => new PetService(new InnoGotchiUnitOfWork(contextOptions), new Mapper(config)));
             _fixture.Register(() => new PetsController(_fixture.Create<PetService>(), new Mapper(config)));
         }
         [Fact]
-        public void PostTest()
+        public async Task PostTestAsync()
         {
             var controller = _fixture.Create<PetsController>();
             var newPet = CreateValidPetModel();
-            var result = controller.Create(newPet);
+            var result = await controller.CreateAsync(newPet);
             result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
-        public void PutTest()
+        public async Task UpdateNameTestAsync()
         {
             var service = _fixture.Create<PetService>();
             var controller = _fixture.Create<PetsController>();
-
             var pet = CreateValidPetDTO();
-            var petId = service.Create(pet);
+            var petId = await service.CreateAsync(pet);
             petId.Should().NotBe(-1);
-            controller.Update(petId, "NewName").Should().BeOfType<OkResult>();
+            var result = await controller.UpdateNameAsync(petId, "NewName");
+            result.Should().BeOfType<OkResult>();
         }
 
         private PetModel CreateValidPetModel()

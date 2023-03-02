@@ -3,7 +3,7 @@ using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Mapper;
 using InnoGotchi.BLL.Services;
 
-namespace InnoGotchiBackendTests
+namespace InnoGotchiBackendTests.PetTests
 {
     public class PetServiceTests
     {
@@ -23,11 +23,11 @@ namespace InnoGotchiBackendTests
         }
 
         [Fact]
-        public void CreateTest()
+        public async Task CreateTestAsync()
         {
             var service = _fixture.Create<PetService>();
             var newPet = CreateValidPetDTO();
-            int newPetId = service.Create(newPet);
+            int newPetId = await service.CreateAsync(newPet);
             newPetId.Should().NotBe(-1);
             var actualPet = service.Get(newPetId);
             actualPet.Should().NotBeNull();
@@ -35,26 +35,26 @@ namespace InnoGotchiBackendTests
         }
 
         [Fact]
-        public void DeleteTest()
+        public async Task DeleteTestAsync()
         {
             var service = _fixture.Create<PetService>();
             var newPet = CreateValidPetDTO();
-            int newPetId = service.Create(newPet);
+            int newPetId = await service.CreateAsync(newPet);
             newPetId.Should().NotBe(-1);
-            service.Delete(newPetId).Should().BeTrue();
+            var result = await service.DeleteAsync(newPetId);
+            result.Should().Be(true);
             service.Get(newPetId).Should().BeNull();
         }
 
         [Fact]
-        public void UpdateTest()
+        public async Task UpdateNameTestAsync()
         {
             var service = _fixture.Create<PetService>();
             var newPet = CreateValidPetDTO();
-            int newPetId = service.Create(newPet);
+            int newPetId = await service.CreateAsync(newPet);
             newPetId.Should().NotBe(-1);
-            newPet.Id = newPetId;
-            newPet.Name = "Test";
-            service.Update(newPet).Should().BeTrue();
+            var result = await service.UpdateNameAsync(newPetId, "Test");
+            result.Should().Be(true);
             var updatedPet = service.Get(newPetId);
             updatedPet.Should().NotBeNull();
             updatedPet?.Id.Should().Be(newPetId);

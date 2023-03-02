@@ -1,4 +1,4 @@
-namespace InnoGotchiBackendTests
+namespace InnoGotchiBackendTests.PetTests
 {
     public class PetRepositoryTests
     {
@@ -18,43 +18,44 @@ namespace InnoGotchiBackendTests
             _fixture.Register(() => new InnoGotchiUnitOfWork(contextOptions));
         }
         [Fact]
-        public void CreateTest()
+        public async Task CreateTestAsync()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
             var pet = CreateValidPet();
 
             uow.Pets.Create(pet);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
             uow.Pets.Contains(p => p.Id == pet.Id).Should().BeTrue();
         }
         [Fact]
-        public void DeleteTest()
+        public async Task DeleteTestAsync()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
             var pets = uow.Pets.AllItems();
             var pet = CreateValidPet();
             uow.Pets.Create(pet);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
+            uow.Detach(pet);
             uow.Pets.Delete(pet.Id);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
             uow.Pets.Contains(p => p.Id == pet.Id).Should().BeFalse();
         }
         [Fact]
-        public void UpdateTest()
+        public async Task UpdateTestAsync()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
 
             var pet = CreateValidPet();
             uow.Pets.Create(pet);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
             pet.Name = "Test";
             uow.Pets.Update(pet);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
             uow.Pets.Contains(p => p.Id == pet.Id && p.Name == "Test").Should().BeTrue();
         }
 
         [Fact]
-        public void GetAllTest()
+        public async Task GetAllTestAsync()
         {
             var uow = _fixture.Create<InnoGotchiUnitOfWork>();
 
@@ -62,7 +63,7 @@ namespace InnoGotchiBackendTests
             var pet2 = CreateValidPet();
             uow.Pets.Create(pet1);
             uow.Pets.Create(pet2);
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
             var pets = uow.Pets.AllItems();
             pets.Count().Should().BeGreaterThanOrEqualTo(2);
         }
