@@ -1,4 +1,6 @@
-﻿namespace InnnoGotchi.DAL.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace InnnoGotchi.DAL.Interfaces
 {
     /// <summary>
     /// Provides functionality to get access to database wherein the type of the data is known
@@ -14,7 +16,7 @@
         /// Gets entity by id from database
         /// </summary>
         /// <param name="id"></param>
-        T? Get(int id, bool isTracking = true);
+        Task<T?> GetAsync(int id, bool isTracking = true);
         /// <summary>
         /// Finds all entities from database that matches the condition wherein the type of the data is known
         /// </summary>
@@ -34,11 +36,11 @@
         /// Removes item from database by id
         /// </summary>
         /// <param name="id"></param>
-        bool Delete(int id);
+        Task<bool> DeleteAsync(int id);
         /// <summary>
         /// Returns true if there is item in database that matches the condition or returns false
         /// </summary>
-        /// <param name="predicate"></param>
-        bool Contains(Func<T, bool> predicate);
+        /// <param name="expression"></param>
+        Task<bool> ContainsAsync(Expression<Func<T, bool>> expression);
     }
 }

@@ -2,6 +2,7 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -16,9 +17,9 @@ namespace InnnoGotchi.DAL.Respositories
         {
             _context = context;
         }
-        public bool Contains(Func<Picture, bool> predicate)
+        public async Task<bool> ContainsAsync(Expression<Func<Picture, bool>> expression)
         {
-            Picture? picture = AllItems().FirstOrDefault(predicate);
+            Picture? picture = await AllItems().FirstOrDefaultAsync(expression);
             if (picture == null)
                 return false;
 
@@ -30,9 +31,9 @@ namespace InnnoGotchi.DAL.Respositories
             _context.Pictures.Add(item);
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            Picture? picture = Get(id);
+            Picture? picture = await GetAsync(id);
             if (picture == null)
                 return false;
 
@@ -45,9 +46,9 @@ namespace InnnoGotchi.DAL.Respositories
             return AllItems(isTracking).Where(expression);
         }
 
-        public Picture? Get(int id, bool isTracking = true)
+        public async Task<Picture?> GetAsync(int id, bool isTracking = true)
         {
-            return AllItems(isTracking).FirstOrDefault(p => p.Id == id);
+            return await AllItems(isTracking).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public IQueryable<Picture> AllItems(bool isTracking = true)
