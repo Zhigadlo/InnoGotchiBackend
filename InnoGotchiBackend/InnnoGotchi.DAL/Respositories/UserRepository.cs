@@ -2,7 +2,6 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -22,8 +21,8 @@ namespace InnnoGotchi.DAL.Respositories
             User? user = AllItems().FirstOrDefault(predicate);
             if (user == null)
                 return false;
-            else
-                return true;
+
+            return true;
         }
 
         public void Create(User item)
@@ -34,30 +33,27 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Delete(int id)
         {
             User? user = Get(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                return true;
-            }
-            return false;
+            if (user == null)
+                return false;
+
+            _context.Users.Remove(user);
+            return true;
         }
 
-        public IEnumerable<User> FindAll(Func<User, bool> expression)
+        public IEnumerable<User> FindAll(Func<User, bool> expression, bool isTracking = true)
         {
-            return AllItems().Where(expression);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public User? Get(int id)
+        public User? Get(int id, bool isTracking = true)
         {
-            return AllItems().FirstOrDefault(u => u.Id == id);
+            return AllItems(isTracking).FirstOrDefault(u => u.Id == id);
         }
 
-        public IQueryable<User> AllItems()
+        public IQueryable<User> AllItems(bool isTracking = true)
         {
-            return _context.Users.Include(u => u.CollaboratedFarms)
-                                 .Include(u => u.SentRequests)
-                                 .Include(u => u.ReceivedRequests)
-                                 .Include(u => u.Farm);
+            var items = _context.Users.Include(u => u.CollaboratedFarms).Include(u => u.SentRequests).Include(u => u.ReceivedRequests).Include(u => u.Farm);
+            return isTracking ? items : items.AsNoTracking();
         }
 
         public void Update(User item)

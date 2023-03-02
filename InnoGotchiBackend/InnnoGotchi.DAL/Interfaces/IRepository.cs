@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace InnnoGotchi.DAL.Interfaces
+﻿namespace InnnoGotchi.DAL.Interfaces
 {
     /// <summary>
     /// Provides functionality to get access to database wherein the type of the data is known
@@ -11,17 +9,17 @@ namespace InnnoGotchi.DAL.Interfaces
         /// <summary>
         /// Gets all entities from database
         /// </summary>
-        IQueryable<T> AllItems();
+        IQueryable<T> AllItems(bool isTracking = true);
         /// <summary>
         /// Gets entity by id from database
         /// </summary>
         /// <param name="id"></param>
-        T? Get(int id);
+        T? Get(int id, bool isTracking = true);
         /// <summary>
         /// Finds all entities from database that matches the condition wherein the type of the data is known
         /// </summary>
         /// <param name="predicate"></param>
-        IEnumerable<T> FindAll(Func<T, bool> predicate);
+        IEnumerable<T> FindAll(Func<T, bool> predicate, bool isTracking = true);
         /// <summary>
         /// Inserts item in database
         /// </summary>

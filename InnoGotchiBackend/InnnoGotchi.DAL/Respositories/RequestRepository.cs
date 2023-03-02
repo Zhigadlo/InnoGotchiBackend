@@ -2,7 +2,6 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -34,42 +33,32 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Delete(int id)
         {
             ColoborationRequest? request = Get(id);
-            if (request != null)
-            {
-                _context.Requests.Remove(request);
-                return true;
-            }
+            if (request == null)
+                return false;
 
-            return false;
+            _context.Requests.Remove(request);
+            return true;
         }
 
-        public IEnumerable<ColoborationRequest> FindAll(Func<ColoborationRequest, bool> expression)
+        public IEnumerable<ColoborationRequest> FindAll(Func<ColoborationRequest, bool> expression, bool isTracking = true)
         {
-            return AllItems().Where(expression);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public ColoborationRequest? Get(int id)
+        public ColoborationRequest? Get(int id, bool isTracking = true)
         {
-            ColoborationRequest? request = AllItems().FirstOrDefault(r => r.Id == id);
-
-            if (request != null)
-            {
-                _context.Entry(request).State = EntityState.Detached;
-                return request;
-            }
-            else
-                return null;
+            var items = AllItems(isTracking);
+            return items.FirstOrDefault(r => r.Id == id);
         }
 
-        public IQueryable<ColoborationRequest> AllItems()
+        public IQueryable<ColoborationRequest> AllItems(bool isTracking = true)
         {
-            return _context.Requests.Include(r => r.RequestOwner)
-                                    .Include(r => r.RequestReceipient);
+            var items = _context.Requests.Include(r => r.RequestOwner).Include(r => r.RequestReceipient);
+            return isTracking ? items : items.AsNoTracking();
         }
 
         public void Update(ColoborationRequest item)
         {
-            _context.Entry(item).State = EntityState.Detached;
             _context.Requests.Update(item);
         }
     }

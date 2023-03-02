@@ -2,7 +2,6 @@
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -22,8 +21,8 @@ namespace InnnoGotchi.DAL.Respositories
             Farm? farm = AllItems().FirstOrDefault(predicate);
             if (farm == null)
                 return false;
-            else
-                return true;
+
+            return true;
         }
 
         public void Create(Farm item)
@@ -34,29 +33,27 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Delete(int id)
         {
             Farm? farm = Get(id);
-            if (farm != null)
-            {
-                _context.Farms.Remove(farm);
-                return true;
-            }
-            else
+            if (farm == null)
                 return false;
+
+            _context.Farms.Remove(farm);
+            return true;
         }
 
-        public IEnumerable<Farm> FindAll(Func<Farm, bool> expression)
+        public IEnumerable<Farm> FindAll(Func<Farm, bool> expression, bool isTracking = false)
         {
-            return AllItems().Where(expression);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public Farm? Get(int id)
+        public Farm? Get(int id, bool isTracking = false)
         {
-            return AllItems().FirstOrDefault(f => f.Id == id);
+            return AllItems(isTracking).FirstOrDefault(f => f.Id == id);
         }
 
-        public IQueryable<Farm> AllItems()
+        public IQueryable<Farm> AllItems(bool isTracking = true)
         {
-            return _context.Farms.Include(f => f.Owner)
-                                 .Include(f => f.Pets);
+            var items = _context.Farms.Include(f => f.Owner).Include(f => f.Pets);
+            return isTracking ? items : items.AsNoTracking();
         }
 
         public void Update(Farm item)

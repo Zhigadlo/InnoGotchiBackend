@@ -64,9 +64,14 @@ namespace InnnoGotchi.DAL.Respositories
         /// <summary>
         /// Saves changes in database
         /// </summary>
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
-            _innoGotchiContext.SaveChanges();
+            await _innoGotchiContext.SaveChangesAsync();
+        }
+
+        public void Detach(object obj)
+        {
+            _innoGotchiContext.Entry(obj).State = EntityState.Detached;
         }
     }
 }

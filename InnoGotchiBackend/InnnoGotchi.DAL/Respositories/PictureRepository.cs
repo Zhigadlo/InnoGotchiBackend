@@ -1,7 +1,7 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
-using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -33,28 +33,27 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Delete(int id)
         {
             Picture? picture = Get(id);
-            if (picture != null)
-            {
-                _context.Pictures.Remove(picture);
-                return true;
-            }
-            else
+            if (picture == null)
                 return false;
+
+            _context.Pictures.Remove(picture);
+            return true;
         }
 
-        public IEnumerable<Picture> FindAll(Func<Picture, bool> expression)
+        public IEnumerable<Picture> FindAll(Func<Picture, bool> expression, bool isTracking = true)
         {
-            return AllItems().Where(expression);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public Picture? Get(int id)
+        public Picture? Get(int id, bool isTracking = true)
         {
-            return AllItems().FirstOrDefault(p => p.Id == id);
+            return AllItems(isTracking).FirstOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<Picture> AllItems()
+        public IQueryable<Picture> AllItems(bool isTracking = true)
         {
-            return _context.Pictures;
+            var items = _context.Pictures;
+            return isTracking ? items : items.AsNoTracking();
         }
 
         public void Update(Picture item)

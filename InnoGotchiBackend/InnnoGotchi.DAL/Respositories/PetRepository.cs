@@ -1,6 +1,7 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnnoGotchi.DAL.Respositories
 {
@@ -20,8 +21,8 @@ namespace InnnoGotchi.DAL.Respositories
             Pet? pet = AllItems().FirstOrDefault(predicate);
             if (pet == null)
                 return false;
-            else
-                return true;
+
+            return true;
         }
 
         public void Create(Pet item)
@@ -32,32 +33,31 @@ namespace InnnoGotchi.DAL.Respositories
         public bool Delete(int id)
         {
             Pet? pet = Get(id);
-            if (pet != null)
-            {
-                _context.Pets.Remove(pet);
-                return true;
-            }
-            return false;
+            if (pet == null)
+                return false;
+
+            _context.Pets.Remove(pet);
+            return true;
         }
 
-        public IEnumerable<Pet> FindAll(Func<Pet, bool> expression)
+        public IEnumerable<Pet> FindAll(Func<Pet, bool> expression, bool isTracking = true)
         {
-            return AllItems().Where(expression);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public Pet? Get(int id)
+        public Pet? Get(int id, bool isTracking = true)
         {
-            return AllItems().FirstOrDefault(p => p.Id == id);
+            return AllItems(isTracking).FirstOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<Pet> AllItems()
+        public IQueryable<Pet> AllItems(bool isTracking = true)
         {
-            return _context.Pets;
+            var items = _context.Pets;
+            return isTracking ? items : items.AsNoTracking();
         }
 
         public void Update(Pet item)
         {
-            _context.ChangeTracker.Clear();
             _context.Pets.Update(item);
         }
     }
