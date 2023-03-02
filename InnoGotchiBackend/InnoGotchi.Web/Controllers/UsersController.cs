@@ -93,14 +93,14 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Create([FromForm] UserModel user)
+        public async Task<IActionResult> CreateAsync([FromForm] UserModel user)
         {
             var userDTO = _mapper.Map<UserDTO>(user);
-            int result = _service.Create(userDTO);
+            int result = await _service.CreateAsync(userDTO);
             if (result != -1)
                 return Ok(result);
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Deletes user by id
@@ -109,9 +109,9 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            if (_service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return Ok();
 
             return BadRequest();
@@ -123,13 +123,13 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Update(UserModel user)
+        public async Task<IActionResult> UpdateAsync(UserModel user)
         {
             var userDTO = _mapper.Map<UserDTO>(user);
-            if (_service.Update(userDTO))
+            if (await _service.UpdateAsync(userDTO))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Updates user avatar by user id
@@ -139,12 +139,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut("avatarChange")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult AvatarUpdate(int Id, byte[] Avatar)
+        public async Task<IActionResult> AvatarUpdateAsync(int Id, byte[] Avatar)
         {
-            if (_service.UpdateAvatar(Id, Avatar))
+            if (await _service.UpdateAvatarAsync(Id, Avatar))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Updates user password by id
@@ -156,13 +156,13 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut("passwordChange")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult PasswordUpdate(int Id, string OldPassword,
+        public async Task<IActionResult> PasswordUpdateAsync(int Id, string OldPassword,
                                             string NewPassword, string ConfirmPassword)
         {
-            if (_service.UpdatePassword(Id, OldPassword, NewPassword, ConfirmPassword))
+            if (await _service.UpdatePasswordAsync(Id, OldPassword, NewPassword, ConfirmPassword))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
 
         /// <summary>
@@ -192,8 +192,8 @@ namespace InnoGotchi.Web.Controllers
             var token = _service.Token(email, password, _configuration);
             if (token == null)
                 return BadRequest(new { errorText = "Invalid email or password." });
-            else
-                return Json(token);
+
+            return Json(token);
         }
 
         /// <summary>

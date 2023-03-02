@@ -56,15 +56,13 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Create(FarmModel farm)
+        public async Task<IActionResult> Create(FarmModel farm)
         {
-            var farmDTO = _mapper.Map<FarmDTO>(farm);
-            farmDTO.CreateTime = DateTime.UtcNow;
-            int result = _service.Create(farmDTO);
-            if (result != -1)
-                return Ok(result);
-            else
+            int result = await _service.CreateAsync(_mapper.Map<FarmDTO>(farm));
+            if (result == -1)
                 return BadRequest();
+
+            return Ok(result);
         }
         /// <summary>
         /// Deletes farm by id
@@ -73,12 +71,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Updates farm
@@ -87,13 +85,13 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Update(FarmModel farm)
+        public async Task<IActionResult> UpdateAsync(FarmModel farm)
         {
             var farmDTO = _mapper.Map<FarmDTO>(farm);
-            if (_service.Update(farmDTO))
+            if (await _service.UpdateAsync(farmDTO))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
     }
 }

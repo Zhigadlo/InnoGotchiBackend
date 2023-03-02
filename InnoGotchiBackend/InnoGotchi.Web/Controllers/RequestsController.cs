@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InnoGotchi.BLL.DTO;
 using InnoGotchi.BLL.Services;
-using InnoGotchi.Web.Mapper;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +13,9 @@ namespace InnoGotchi.Web.Controllers
     {
         private RequestService _service;
         private IMapper _mapper;
-        public RequestsController(RequestService service)
+        public RequestsController(RequestService service, IMapper mapper)
         {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile(new ViewModelProfile()));
-            _mapper = config.CreateMapper();
+            _mapper = mapper;
             _service = service;
         }
         /// <summary>
@@ -27,7 +25,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<ColoborationRequestDTO>), 200)]
         public IActionResult GetAll()
         {
-            return Ok(_service.GetAll());
+            return Ok(_service.GetAll(false));
         }
         /// <summary>
         /// Gets coloboration request by id
@@ -37,7 +35,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(ColoborationRequestDTO), 200)]
         public IActionResult Get(int id)
         {
-            return Ok(_service.Get(id));
+            return Ok(_service.Get(id, false));
         }
         /// <summary>
         /// Deletes coloboration request by id
@@ -46,12 +44,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            if (_service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Creates coloboration request
@@ -60,16 +58,14 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Create(RequestModel request)
+        public async Task<IActionResult> CreateAsync(RequestModel request)
         {
             var requestDTO = _mapper.Map<ColoborationRequestDTO>(request);
-            requestDTO.IsConfirmed = false;
-            requestDTO.Date = DateTime.UtcNow;
-            int result = _service.Create(requestDTO);
+            int result = await _service.CreateAsync(requestDTO);
             if (result != -1)
                 return Ok(result);
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Confirms request by id
@@ -78,19 +74,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut("confirm/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult ConfirmRequest(int id)
+        public async Task<IActionResult> ConfirmRequestAsync(int id)
         {
-            ColoborationRequestDTO? request = _service.Get(id);
-            if (request != null)
-            {
-                request.IsConfirmed = true;
-                if (_service.Update(request))
-                    return Ok();
-                else
-                    return BadRequest();
-            }
-            else
-                return BadRequest();
+            if (await _service.ConfirmAsync(id))
+                return Ok();
+
+            return BadRequest();
         }
     }
 }

@@ -47,14 +47,14 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Create(PictureModel picture)
+        public async Task<IActionResult> Create(PictureModel picture)
         {
             var pictureDTO = _mapper.Map<PictureDTO>(picture);
-            var result = _service.Create(pictureDTO);
+            var result = await _service.CreateAsync(pictureDTO);
             if (result != -1)
                 return Ok(result);
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Deletes picture by id
@@ -63,12 +63,11 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Delete(int id)
         {
             if (_service.Delete(id))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
     }
 }

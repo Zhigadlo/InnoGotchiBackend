@@ -28,6 +28,10 @@ namespace InnoGotchi.BLL.Services
                 return -1;
 
             Pet newPet = _mapper.Map<Pet>(item);
+            newPet.CreateTime = DateTime.UtcNow;
+            newPet.FirstHappinessDate = DateTime.UtcNow;
+            newPet.LastDrinkingTime = DateTime.UtcNow;
+            newPet.LastFeedingTime = DateTime.UtcNow;
             var result = _validator.Validate(newPet);
             if (!result.IsValid)
                 return -1;
@@ -44,6 +48,11 @@ namespace InnoGotchi.BLL.Services
         public IEnumerable<PetDTO> GetAll(bool isTracking = true)
         {
             return _mapper.Map<IEnumerable<PetDTO>>(_database.Pets.AllItems(isTracking));
+        }
+
+        public IEnumerable<string> GetAllNames()
+        {
+            return _database.Pets.AllItems(false).Select(p => p.Name);
         }
         /// <summary>
         /// Gets PaginatedList object that have information about page with sorting and filtration

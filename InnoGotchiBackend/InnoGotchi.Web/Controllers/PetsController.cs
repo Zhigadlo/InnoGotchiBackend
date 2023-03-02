@@ -50,7 +50,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public IActionResult GetAllNames()
         {
-            return Ok(_service.GetAll().Select(p => p.Name));
+            return Ok(_service.GetAllNames());
         }
         /// <summary>
         /// Gets pet by id 
@@ -69,18 +69,14 @@ namespace InnoGotchi.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Create([FromForm] PetModel pet)
+        public async Task<IActionResult> CreateAsync([FromForm] PetModel pet)
         {
             var petDTO = _mapper.Map<PetDTO>(pet);
-            petDTO.CreateTime = DateTime.UtcNow;
-            petDTO.FirstHappinessDate = DateTime.UtcNow;
-            petDTO.LastDrinkingTime = DateTime.UtcNow;
-            petDTO.LastFeedingTime = DateTime.UtcNow;
-            var result = _service.Create(petDTO);
-            if (result != -1)
-                return Ok(result);
-            else
+            var result = await _service.CreateAsync(petDTO);
+            if (result == -1)
                 return BadRequest();
+
+            return Ok(result);
         }
         /// <summary>
         /// Updates pet name by id
@@ -90,20 +86,12 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Update(int id, string newName)
+        public async Task<IActionResult> UpdateNameAsync(int id, string newName)
         {
-            PetDTO? petDTO = _service.Get(id);
+            if (await _service.UpdateNameAsync(id, newName))
+                return Ok();
 
-            if (petDTO != null)
-            {
-                petDTO.Name = newName;
-                if (_service.Update(petDTO))
-                    return Ok();
-                else
-                    return BadRequest();
-            }
-            else
-                return BadRequest();
+            return BadRequest();
         }
         /// <summary>
         /// Sets death time to pet by id
@@ -113,13 +101,13 @@ namespace InnoGotchi.Web.Controllers
         [HttpPut("death/{id}&{deathTime}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Death(int id, long deathTime)
+        public async Task<IActionResult> DeathAsync(int id, long deathTime)
         {
-            var result = _service.Death(id, deathTime);
+            var result = await _service.DeathAsync(id, deathTime);
             if (result)
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Delets pet by id
@@ -128,30 +116,30 @@ namespace InnoGotchi.Web.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            if (_service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return Ok();
-            else
-                return BadRequest();
+
+            return BadRequest();
         }
         /// <summary>
         /// Feeds pet by id
         /// </summary>
         /// <param name="id">Pet id</param>
         [HttpPut("feed/{id}")]
-        public void Feed(int id)
+        public async Task FeedAsync(int id)
         {
-            _service.Feed(id);
+            await _service.FeedAsync(id);
         }
         /// <summary>
         /// Gives a drink to pet by id
         /// </summary>
         /// <param name="id">Pet id</param>
         [HttpPut("drink/{id}")]
-        public void Drink(int id)
+        public async Task DrinkAsync(int id)
         {
-            _service.Drink(id);
+            await _service.DrinkAsync(id);
         }
     }
 }
