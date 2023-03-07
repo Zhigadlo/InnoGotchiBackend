@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using InnoGotchi.BLL.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -15,12 +16,20 @@ namespace InnoGotchi.BLL.Options
 
         private string _key;
 
-        public AuthOptions(IConfiguration configuration)
+        public AuthOptions(IOptions<TokenSettings> settings)
         {
-            _key = configuration.GetSection("TokenKey").Value;
-            Issuer = configuration.GetSection("TokenIssuer").Value;
-            Audience = configuration.GetSection("TokenAudience").Value;
-            Lifetime = int.Parse(configuration.GetSection("TokenExpireTimeHours").Value);
+            var tokenSettings = settings.Value;
+            _key = tokenSettings.Key;
+            Issuer = tokenSettings.Issuer;
+            Audience = tokenSettings.Audience;
+            Lifetime = tokenSettings.ExpireTimeHours;
+        }
+        public AuthOptions(string issuer, string audience, int lifetime, string key)
+        {
+            Issuer = issuer;
+            Audience = audience;
+            Lifetime = lifetime;
+            _key = key;
         }
 
         public SymmetricSecurityKey GetSymmetricSecurityKey()

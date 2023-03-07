@@ -7,6 +7,7 @@ using InnoGotchi.BLL.Options;
 using InnoGotchi.BLL.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -209,7 +210,7 @@ namespace InnoGotchi.BLL.Services
             }
         }
 
-        public async Task<SecurityTokenModel?> TokenAsync(string email, string password, IConfiguration configuration)
+        public async Task<SecurityTokenModel?> TokenAsync(string email, string password, IOptions<TokenSettings> tokenSettings)
         {
             UserDTO? person = await FindUserByEmailAndPasswordAsync(email, password);
 
@@ -227,7 +228,7 @@ namespace InnoGotchi.BLL.Services
                     new Claim(nameof(SecurityTokenModel.UserName), userName.ToString()),
                 };
 
-            var authOptions = new AuthOptions(configuration);
+            var authOptions = new AuthOptions(tokenSettings);
             var now = DateTime.UtcNow;
             var expiredAt = now.AddHours(authOptions.Lifetime);
             var jwt = new JwtSecurityToken(

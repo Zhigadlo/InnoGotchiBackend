@@ -2,36 +2,20 @@ using AutoMapper;
 using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Respositories;
 using InnoGotchi.BLL.Mapper;
-using InnoGotchi.BLL.Options;
+using InnoGotchi.BLL.Models;
 using InnoGotchi.BLL.Services;
+using InnoGotchi.Web.Extensions;
 using InnoGotchi.Web.Mapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.Configure<TokenSettings>(options => builder.Configuration.GetSection(nameof(TokenSettings)).Bind(options));
 builder.Services.AddDbContext<InnoGotchiContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-var authOptions = new AuthOptions(builder.Configuration);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = authOptions.Issuer,
-                        ValidAudience = authOptions.Audience,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
-                        ValidateIssuerSigningKey = true
-                    };
-                });
+builder.Services.AddJwtTokenAuthentication(builder.Configuration);
 
 var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile> { new MapperProfile(), new ViewModelProfile() }));
 builder.Services.AddTransient<IMapper>(x => new Mapper(config));

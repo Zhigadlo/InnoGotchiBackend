@@ -5,6 +5,7 @@ using InnoGotchi.BLL.Services;
 using InnoGotchi.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
@@ -16,14 +17,14 @@ namespace InnoGotchi.Web.Controllers
     {
         private UserService _service;
         private IMapper _mapper;
-        private IConfiguration _configuration;
+        private IOptions<TokenSettings> _tokenSettings;
         public UsersController(UserService service,
-                               IConfiguration configuration,
+                               IOptions<TokenSettings> tokenSettings,
                                IMapper mapper)
         {
             _mapper = mapper;
             _service = service;
-            _configuration = configuration;
+            _tokenSettings = tokenSettings;
         }
         /// <summary>
         /// Gets all users
@@ -189,7 +190,7 @@ namespace InnoGotchi.Web.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> TokenAsync(string email, string password)
         {
-            var token = await _service.TokenAsync(email, password, _configuration);
+            var token = await _service.TokenAsync(email, password, _tokenSettings);
             if (token == null)
                 return BadRequest(new { errorText = "Invalid email or password." });
 
