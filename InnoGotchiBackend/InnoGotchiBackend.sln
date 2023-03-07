@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoGotchi.Web", "InnoGotchi.Web\InnoGotchi.Web.csproj", "{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnoGotchi.Web", "InnoGotchi.Web\InnoGotchi.Web.csproj", "{2E066E83-D9C2-4C67-982F-DB3CBF308CA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnnoGotchi.DAL", "InnnoGotchi.DAL\InnnoGotchi.DAL.csproj", "{D655595E-234F-4937-BA23-8FF56FB756E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnnoGotchi.DAL", "InnnoGotchi.DAL\InnnoGotchi.DAL.csproj", "{D655595E-234F-4937-BA23-8FF56FB756E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnoGotchi.BLL", "Innogotchi.BLL\InnoGotchi.BLL.csproj", "{2D37C2ED-681C-4332-8374-24D169E39BED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InnoGotchiBackendTests", "InnoGotchiBackendTests\InnoGotchiBackendTests.csproj", "{3C457200-8034-4FA7-BE15-FFE6125A464A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{D655595E-234F-4937-BA23-8FF56FB756E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D655595E-234F-4937-BA23-8FF56FB756E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D655595E-234F-4937-BA23-8FF56FB756E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D37C2ED-681C-4332-8374-24D169E39BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D37C2ED-681C-4332-8374-24D169E39BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D37C2ED-681C-4332-8374-24D169E39BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D37C2ED-681C-4332-8374-24D169E39BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C457200-8034-4FA7-BE15-FFE6125A464A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C457200-8034-4FA7-BE15-FFE6125A464A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C457200-8034-4FA7-BE15-FFE6125A464A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C457200-8034-4FA7-BE15-FFE6125A464A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

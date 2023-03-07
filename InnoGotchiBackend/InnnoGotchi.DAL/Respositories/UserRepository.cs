@@ -1,45 +1,64 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class UserRepository : InnoGotchiContextHandler, IRepository<User>
+    /// <summary>
+    /// Represents repository that has full access to user entities in database
+    /// </summary>
+    public class UserRepository : IRepository<User>
     {
-        public UserRepository(InnoGotchiContext context) : base(context) { }
-        
+        private InnoGotchiContext _context;
+        public UserRepository(InnoGotchiContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<bool> ContainsAsync(Expression<Func<User, bool>> expression)
+        {
+            User? user = await AllItems().FirstOrDefaultAsync(expression);
+            if (user == null)
+                return false;
+
+            return true;
+        }
+
         public void Create(User item)
         {
             _context.Users.Add(item);
         }
 
-        public void Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            User? user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
+            User? user = await GetAsync(id);
+            if (user == null)
+                return false;
+
+            _context.Users.Remove(user);
+            return true;
         }
 
-        public IEnumerable<User> Find(Func<User, bool> predicate)
+        public IEnumerable<User> FindAll(Func<User, bool> expression, bool isTracking = true)
         {
-            return _context.Users.Where(predicate);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public User? Get(int id)
+        public async Task<User?> GetAsync(int id, bool isTracking = true)
         {
-            return _context.Users.FirstOrDefault(u => u.Id == id);
+            return await AllItems(isTracking).FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public IEnumerable<User> GetAll()
+        public IQueryable<User> AllItems(bool isTracking = true)
         {
-            return _context.Users;
+            var items = _context.Users.Include(u => u.CollaboratedFarms).Include(u => u.SentRequests).Include(u => u.ReceivedRequests).Include(u => u.Farm);
+            return isTracking ? items : items.AsNoTracking();
         }
 
-        public void Update(int id, User item)
+        public void Update(User item)
         {
-            item.Id = id;
             _context.Users.Update(item);
         }
     }

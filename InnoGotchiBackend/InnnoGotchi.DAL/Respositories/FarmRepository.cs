@@ -1,45 +1,64 @@
 ﻿using InnnoGotchi.DAL.EF;
 using InnnoGotchi.DAL.Entities;
 using InnnoGotchi.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace InnnoGotchi.DAL.Respositories
 {
-    public class FarmRepository : InnoGotchiContextHandler, IRepository<Farm>
+    /// <summary>
+    /// Represents repository that has full access to farm entities in database
+    /// </summary>
+    public class FarmRepository : IRepository<Farm>
     {
-        public FarmRepository(InnoGotchiContext context) : base(context) { }
+        private InnoGotchiContext _context;
+        public FarmRepository(InnoGotchiContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<bool> ContainsAsync(Expression<Func<Farm, bool>> expression)
+        {
+            Farm? farm = await AllItems().FirstOrDefaultAsync(expression);
+            if (farm == null)
+                return false;
+
+            return true;
+        }
 
         public void Create(Farm item)
         {
             _context.Farms.Add(item);
         }
 
-        public void Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            Farm? farm = _context.Farms.FirstOrDefault();
-            if (farm != null)
-            {
-                _context.Farms.Remove(farm);
-            }
+            Farm? farm = await GetAsync(id);
+            if (farm == null)
+                return false;
+
+            _context.Farms.Remove(farm);
+            return true;
         }
 
-        public IEnumerable<Farm> Find(Func<Farm, bool> predicate)
+        public IEnumerable<Farm> FindAll(Func<Farm, bool> expression, bool isTracking = false)
         {
-            return _context.Farms.Where(predicate);
+            return AllItems(isTracking).Where(expression);
         }
 
-        public Farm? Get(int id)
+        public async Task<Farm?> GetAsync(int id, bool isTracking = false)
         {
-            return _context.Farms.FirstOrDefault(f => f.Id == id);
+            return await AllItems(isTracking).FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public IEnumerable<Farm> GetAll()
+        public IQueryable<Farm> AllItems(bool isTracking = true)
         {
-            return _context.Farms;
+            var items = _context.Farms.Include(f => f.Owner).Include(f => f.Pets);
+            return isTracking ? items : items.AsNoTracking();
         }
 
-        public void Update(int id, Farm item)
+        public void Update(Farm item)
         {
-            item.Id = id;
             _context.Farms.Update(item);
         }
     }
